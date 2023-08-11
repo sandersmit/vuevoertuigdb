@@ -27,6 +27,8 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
         return state.reactiveVoertuiglist
       },
       getChangedReactiveVoertuiglist:function(state){
+        state.changedReactiveVoertuiglist.length = 0;
+        console.log("state.changedReactiveVoertuiglist: "+ state.changedReactiveVoertuiglist)
         this.reactiveVoertuiglist.forEach(addIndex);
                     function addIndex(item, index){
                       state.changedReactiveVoertuiglist.push({

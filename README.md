@@ -9,3 +9,4 @@ Set proper urls for filtering
 Implement max pagination items (next and prev menu item) 
 Add propper userhistory and us storage api 
 Filteren met checkboxes op auto merken. (checkboxes: ford, opel, nissan etc.. ) in aside
+Split VoertuigPage in different components

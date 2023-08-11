@@ -1,7 +1,8 @@
 <template>
-    <li>
-        <a :href="`/voertuigenpage/${paginationIndexProp}`"  
-        :data-cur-page="`${currentPageProp}`" :data-page-number=setPages @click.prevent="currentPageEventEmit">
+    <li class="item">
+        <a :href="`/voertuigenpage/${paginationIndexProp}`" 
+        :class="paginationIndexProp==0 ?'active':''"  
+        :data-cur-page="`${currentPageProp}`" @click.prevent="currentPageEventEmit">
         page {{ paginationIdProp }}</a>
     </li>
 </template>
@@ -69,8 +70,13 @@ export default{
     // so only to check and return or display allready-known & 
     // -calculated values (from methods:) to the user-interface
     computed:{
-      
-
+        computedClass() {
+      const valueclassname = paginationIndexProp=0 ? 'active':''
+      //let className = 'active';
+      // More complicated logic to determine what
+      // class should be applied
+      return valueclassname;
+        }
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 
@@ -88,9 +94,6 @@ export default{
 </script>
 <style scoped lang="scss">
 body{
-    li{
-        color: red;
-    }
     a{
         text-decoration: none;
         margin:1px;

@@ -8,9 +8,9 @@ const currentPageUrl = window.location.hash;
 function updateUrlTrack(){
     urlTrackArr.push(currentPageUrl)
     //urlTrack.value.push(lastPageUrl)
-    console.log(urlTrackArr)
-    console.log(urlTrackArr.length)
-    console.log(window.location.hash)
+    // console.log(urlTrackArr)
+    // console.log(urlTrackArr.length)
+    // console.log(window.location.hash)
     //location.href = lastPageUrl;
    return urlTrackArr;
 }
