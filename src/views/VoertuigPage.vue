@@ -1,27 +1,39 @@
 <script>
 
+import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import VoertuigComp from '../components/VoertuigComp.vue';
 import PaginationComp from '../components/PaginationComp.vue';
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
 import { ref } from 'vue'
 import { useUrlTrack } from '../composables/composeUrlTrack';
-//import { onMounted } from "vue";
+import { onMounted } from "vue";
 
 export default {
     //using composition api with setup() as am option from the option API
     setup() {
         const voertuigStore = useVoertuigStore();
         const route = useRoute();
+        const composeUrlTrack = useUrlTrack();
+        const brandArrayRef = ref([])
+
+        //refs
         const userhistory = ref(false);
         const totalResults = ref(0)
-        const composeUrlTrack = useUrlTrack();
+
+        onMounted(() => {
+         console.log("onMounted() lifecycle Reactive Voertuigpage");
+        // console.log(inputElementRef.value.className);
+         //inputElementRef.value
+        })
+
         return {
             voertuigStore,
             route,
             userhistory,
             composeUrlTrack,
-            totalResults
+            totalResults,
+            brandArrayRef,
         }
     },
     //end using composition api with setup()
@@ -35,6 +47,7 @@ export default {
             title: "Overzichts pagina",
             data2: 'this is some data from Voertuig DB home page',
             filterResults: false,
+            filtercheckbox:false,
             currentPage: 0,
             startRange: 0,
             resultsPerPage: 100,
@@ -44,6 +57,7 @@ export default {
             searchText: null,
             filterSelect: "",
             //reactiveDataSet
+            merkFiltersSelected:[],
             newrangeArray: [
             ],
             sortedVoertuigenArr: [
@@ -140,6 +154,30 @@ export default {
             }
             
         },
+        emitCheckboxValue: function (argument) {
+            //  console.log(`emited argument is : ${argument} from ,custom event: emitCheckboxValue
+            //   , triggerd by the child component to parent component`)
+        if(argument.thisSelected){
+            console.log("selected true- push"+argument.thisCheckboxName)
+            this.merkFiltersSelected.push(argument.thisCheckboxName);
+        }else{
+            console.log("empty item- DONT push"+ argument.thisCheckboxName);
+           this.merkFiltersSelected.filter((deleteItem, index)=>{
+                if(deleteItem == argument.thisCheckboxName){
+                    //this.brandArrayRef.push(argument);
+                    let findindex = this.merkFiltersSelected.indexOf(deleteItem);
+                    console.log("delete"+ deleteItem + findindex + index);
+                    delete this.merkFiltersSelected[findindex]; 
+                }
+                //To remove the duplicates, you use the filter() method to include only 
+                //elements whose indexes match their indexOf values:
+                //return removedItem
+        })
+        }
+        this.filterResults = false; 
+        this.filtercheckbox = true;
+
+        },
         emitUpdateUserHistory: function (argument) {
           //  console.log(argument);
             
@@ -163,7 +201,46 @@ export default {
         setEndRange() {
           //  console.log('endrange set')
             return this.setStartRange() + 100;
-        }
+        },
+        collectbrands(){
+           // this.voertuigStore.getAllBrands;
+            // console.log( this.voertuigStore.getAllBrands)
+             //reset ref
+             this.brandArrayRef = ref([]);
+             this.brandArrayRef = this.voertuigStore.getAllBrands.filter((knownItem, index)=>{
+                if(knownItem){
+                    this.brandArrayRef.push(knownItem.merk).value;
+                }
+                //To remove the duplicates, you use the filter() method to include only 
+                //elements whose indexes match their indexOf values:
+                return this.brandArrayRef.indexOf(knownItem.merk) === index;
+            });
+             console.log(this.brandArrayRef.length);
+
+         
+            // console.log(newArray);
+            //  updateBrands(knownItem, index) {
+            //return this.brandArrayRef.indexOf(knownItem) === index
+            //this.voertuigStore.getAllBrands.indexOf(knownItem) === index; 
+            //if (knownItem.merk){
+            //if( knownItem.merk == "OPEL"){
+                //if(  this.brandArrayRef.indexOf(knownItem) === index ){
+                   // return this.brandArrayRef.push(knownItem.merk).value;
+                // console.log("merk:"+ knownItem.merk)
+                   // return knownItem;
+                //   console.log("index:"+ index)
+                // this.brandArrayRef;
+                // console.log(this.brandArrayRef.indexOf(knownItem.merk)) 
+          //  }
+            // console.log("index:"+ index)
+        
+            // console.log('aantal opels:'+this.brandArrayRef.length)
+            //console.log( this.voertuigStore.getAllBrands.indexOf('OPEL'));
+            
+           // }
+            
+        },
+        
     },
     //COMPUTED: 
     //-are configurations that add functions to binding :bind
@@ -217,6 +294,37 @@ export default {
                 return searchedVoertuigen
             }
         },
+        checkBoxSelectedArray(){
+            const returnedArray = this.merkFiltersSelected.filter(showselected)
+            function showselected(item, index) {
+               console.log("item?"+ item) 
+               
+               return item;
+                }
+            return returnedArray;
+        },
+        checkboxSelectedMerk(){
+          console.log("merkFiltersSelected used"+this.filtercheckbox)
+         if(this.filtercheckbox){
+            console.log('checkboxSelectedMerk using - selectedVoertuigen find..'+ this.filtercheckbox);
+             //return this.merkFiltersSelected;
+             const selectedMerken = this.merkFiltersSelected;
+             const selectedVoertuigen = this.voertuigStore.getChangedReactiveVoertuiglist.filter(
+                function (item,index) {
+                   // console.log('checkboxSelectedMerk using - selectedVoertuigen find..'+ this.filtercheckbox);
+                    // console.log(item)   
+                    // console.log(selectedMerken[0])
+                    return item.merk.match(selectedMerken[0]);
+                 //console.log(item)
+                });
+                return selectedVoertuigen;
+          }else{
+            console.log('searchVoertuigen using - getChangedReactiveVoertuiglist'+ this.filtercheckbox);
+            return this.merkFiltersSelected;
+           // return this.merkFiltersSelected = [""];
+          }
+          //return this.merkFiltersSelected;
+        },
         sortVoertuigenMerk() {
             if  (this.filterSelect != "") {
                      const sortedVoertuigen = this.voertuigStore.getChangedReactiveVoertuiglist.sort((p1, p2) => {
@@ -233,7 +341,7 @@ export default {
                     // return 0;
                 });
                 //this.sortedVoertuigenArr = sortedVoertuigen
-               // console.log("this.sortedVoertuigenArr"+this.sortedVoertuigenArr[0].merk)
+               // console.log("this.sorddtedVoertuigenArr"+this.sortedVoertuigenArr[0].merk)
                 return sortedVoertuigen;
             }else{
              return this.voertuigStore.getChangedReactiveVoertuiglist;
@@ -241,23 +349,32 @@ export default {
             //console.log(sortedVoertuigen);
         },
         computeResults(){
-            
             const newtotalResults =this.searchText!=null?this.searchVoertuigen.length:this.voertuigStore.getChangedReactiveVoertuiglist.length; 
             //this.totalResults = this.searchVoertuigen.length; 
-            console.log( this.searchVoertuigen.length)
-            console.log( this.voertuigStore.getChangedReactiveVoertuiglist.length)
-
+            // console.log( this.searchVoertuigen.length)
+            // console.log( this.voertuigStore.getChangedReactiveVoertuiglist.length)
             return newtotalResults;
+        },
+        computeBrandArray(){
+            let theArr = [];
+            theArr = this.voertuigStore.getAllBrands.filter((knownItem, index)=>{
+                if(knownItem){
+                    theArr.push(knownItem.merk).value;
+                }
+                return theArr.indexOf(knownItem.merk) === index;
+            });
+            return  theArr;
         }
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 
     watch: {
         //value is the default parameter/argument that comes with a watch: propertie. 
-        roundCount(value) {
-            if (value % 3 === 0) {
-                console.log("special attack 100%");
+        checkBoxSelectedArray(value) {
+            if (value.length < 1) {
+                console.log("no more selections");
                 //this.roundCount = 0;
+                this.filtercheckbox = false;
             }
         },
         startRange(value) {
@@ -314,6 +431,11 @@ export default {
     //   const paginationCompItem = document.querySelector(".item");
     //   paginationCompItem.classList.add('active');
      // document.querySelector(".item")[0].classList.add('active');
+   
+            //console.log("onMounted() lifecycle show element ref");
+            // console.log(inputElementRef.value.tagName);
+            // inputElementRef.value.tagName
+       
     },
 
     //to comunicate for developers on howmany or wich emit events there are. 
@@ -353,7 +475,7 @@ export default {
             <article>
                 <ul class="huddata">
                     <li>
-                        <button @click.prevent="checkParams" class="btn">show params</button>
+                        <button @click="collectbrands()" class="btn">show params</button>
                     </li>
                     <li>
                         paginationNavs: {{ this.makeNavPagination().length }}
@@ -379,54 +501,39 @@ export default {
                 </ul>
             </article>
             <form class="py-1">
-                    <label class="form-label" for="filter1">filteren op:</label>
+                    <label class="form-label" for="filter1">sorteer op:</label>
                     <select id="filter1" name="filter1" class="form-select" @change="outputFilter($event)" aria-label="Default select example">
                         <option value=""> selecteer</option>
                         <option value="merk">Merk</option>
                         <option value="kenteken">Kenteken</option>
                         <option value="handelsbenaming">Handelsbenaming</option>
                     </select>
-                   
                     <label class="form-label" for="filter1">zoeken op:</label>
                     <input type="search" class="form-control" v-model="this.searchText" placeholder="zoek op merk">      
                     <fieldset>
+                        <hr>
+                        Totaal aantal merken"{{ this.computeBrandArray.length }}
+                        <hr>
+                        Aantal merken geselecteerd: {{ this.checkboxSelectedMerk.length }}
+                        geselecteerde voertuigen: {{ this.checkBoxSelectedArray }}
+                        <!-- {{this.merkFiltersSelected}} -->
+                        <hr>
                         <legend>filter op merk</legend>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">Alfa romeo</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">Opel</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">Mercedes</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">Ford</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">Peugot</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">BMW</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="save-info">
-                        <label class="form-check-label" for="save-info">Audi</label>
-                    </div>
+                    <filtercheckbox-comp v-for="(checkboxitem, index) in this.computeBrandArray" :key="index" :checkbox-name-prop="checkboxitem.merk"
+                    :check-id-prop="index" :checkbox-value-prop="checkboxitem.merk" @emit-checkbox-value="emitCheckboxValue">
+                    </filtercheckbox-comp >
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="save-info">
+                            <label class="form-check-label" for="save-info">direct check</label>
+                        </div>
                     </fieldset>
                 </form>
         </aside>
     <main  class="col-sm-12 col-md-9">
         <section>
-            <ul class="paginationComp">
+            <ul class="paginationComp test" ref="inputElementRef" >
                 <pagination-comp v-for="(voertuig, index) in this.setPagesNav" :key="index" :pagination-index-prop="index"
-                    :pagination-id-prop="index" :current-page-prop="index" @emit-array-range="emitArrayRange">
+                    :pagination-id-prop="index" :current-page-prop="index"    @emit-array-range="emitArrayRange">
                 </pagination-comp>
             </ul>
             <div class="resultsTotal">
@@ -450,9 +557,8 @@ export default {
                     :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
-
             </div>
-            <div class="results filterResultsfalse searchresultstrue" v-if="filterResults == false && searchText!=null">
+            <div class="results filterResultsfalse searchresultstrue filtercheckboxfalse" v-if="filterResults == false && searchText!=null && filtercheckbox==false">
                 <mark>default results- filterResults: {{ filterResults }}</mark>
                 <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.searchVoertuigen.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
@@ -461,7 +567,16 @@ export default {
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
             </div>
-            <div class="results filterResultsfalse searchresultsfalse" v-if="filterResults == false && searchText==null">
+            <div class="results filterResultsfalse searchresultsfalse filtercheckboxtrue" v-if="filterResults == false && searchText==null && filtercheckbox==true">
+                <mark>default results- filterResults: {{ filterResults }} with checkbox</mark>
+                <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.checkboxSelectedMerk.slice(this.setPages, this.setEndRange())"
+                    :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
+                    :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
+                    :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
+                    @emit-update-user-history="emitUpdateUserHistory">
+                </voertuig-comp>
+            </div>
+            <div class="results filterResultsfalse searchresultsfalse filtercheckboxfalse" v-if="filterResults == false && searchText==null && filtercheckbox==false">
                 <mark>default results- filterResults: {{ filterResults }}</mark>
                 <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.voertuigStore.getChangedReactiveVoertuiglist.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"

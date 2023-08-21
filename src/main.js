@@ -11,6 +11,7 @@ import { createPinia } from 'pinia'
 
 //import custom components
 
+import FilterCheckboxComp from './components/forms/FilterCheckboxComp.vue'
 import PaginationComp from './components/PaginationComp.vue';
 import TopNavBar from './components/TopNavBar.vue';
 import VoertuigComp from './components/VoertuigComp.vue';
@@ -34,6 +35,8 @@ const pinia = createPinia()
 //use it as <vriend-contact></vriend-contact> in main App.vue
 // 2 component object/instance name, defined on the import..above
 
+
+AppNameConst.component('filtercheckbox-comp', FilterCheckboxComp)
 AppNameConst.component('pagination-comp', PaginationComp)
 AppNameConst.component('top-nav-bar', TopNavBar)
 AppNameConst.component('voertuig-comp', VoertuigComp)

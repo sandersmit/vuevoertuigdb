@@ -18,6 +18,9 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
           ],
           filteredlist:[
 
+          ],
+          brandVoertuiglist:[
+
           ]
         };
       },
@@ -57,6 +60,18 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
             return item.kenteken === argument;
           });
         };
+      },
+      getAllBrands:function (state) {
+       console.log("getAllBrands")
+       this.reactiveVoertuiglist.forEach(addbrand);
+                    function addbrand(item, index){
+                      state.brandVoertuiglist.push({
+                        'id':index,
+                        'merk': item.merk,
+                      });
+                    }
+          return state.brandVoertuiglist
+      //    return state.reactiveVoertuiglist.includes("Mango")
       }
     },
     //Actions are functions that can also be asynchronous which are used to update the state
