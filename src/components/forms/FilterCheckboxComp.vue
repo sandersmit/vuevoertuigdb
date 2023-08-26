@@ -13,6 +13,7 @@
     </div>
     <!-- {{ this.togglecheckboxEl[0] }} -->
     {{ this.selected }}
+    <!-- {{ this.returnChecked }} -->
 </template>
 
 <script>
@@ -78,7 +79,7 @@ export default{
             //emitting custom event 'emit-custom-event' => to parent comp
             // passing 'custom event name' + argument
             this.selected =! this.selected;
-            console.log("this.selected:"+ this.selected)
+            console.log("this.selected?:"+ this.selected)
             //console.log("checkboxValuePropEmit:"+ this.togglecheckboxEl[0])
            // console.log("checkboxValuePropEmit:"+ this.checkboxNameProp)
            const emitCheckboxProps = {
@@ -110,7 +111,10 @@ export default{
       // More complicated logic to determine what
       // class should be applied
       return valueclassname;
-        }
+        },
+        // returnChecked() {
+        //     return this.selected
+        // }   
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 
@@ -144,8 +148,6 @@ body{
         &.active{
             color:#42d392;
         }
-        
-
     }
 }
    
