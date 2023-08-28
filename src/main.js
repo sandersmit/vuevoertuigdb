@@ -12,6 +12,7 @@ import { createPinia } from 'pinia'
 //import custom components
 
 import FilterCheckboxComp from './components/forms/FilterCheckboxComp.vue'
+import FormFieldComp from './components/forms/FormFieldComp.vue' 
 import PaginationComp from './components/PaginationComp.vue';
 import TopNavBar from './components/TopNavBar.vue';
 import VoertuigComp from './components/VoertuigComp.vue';
@@ -37,6 +38,7 @@ const pinia = createPinia()
 
 
 AppNameConst.component('filtercheckbox-comp', FilterCheckboxComp)
+AppNameConst.component('form-field-comp', FormFieldComp)
 AppNameConst.component('pagination-comp', PaginationComp)
 AppNameConst.component('top-nav-bar', TopNavBar)
 AppNameConst.component('voertuig-comp', VoertuigComp)

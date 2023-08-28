@@ -1,6 +1,6 @@
 <script>
+
 import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
-import FormFieldComp from '../components/forms/FormFieldComp.vue';
 import VoertuigComp from '../components/VoertuigComp.vue';
 import PaginationComp from '../components/PaginationComp.vue';
 import { useVoertuigStore } from '../stores/VoertuigStore';
@@ -17,7 +17,6 @@ export default {
         const route = useRoute();
         const composeUrlTrack = useUrlTrack();
         const brandArrayRef = ref([])
-        const customBrandArrayRef = ref([{name:'custom opel',kenteken:'00-00-00'},{name:'custom Ford',kenteken:'11-11-11'}])
 
         //refs
         const userhistory = ref(false);
@@ -36,14 +35,12 @@ export default {
             composeUrlTrack,
             totalResults,
             brandArrayRef,
-            customBrandArrayRef
         }
     },
     //end using composition api with setup()
     components: {
         VoertuigComp,
-        PaginationComp,
-        FormFieldComp
+        PaginationComp
     },
     data() {
         return {
@@ -73,34 +70,9 @@ export default {
             //pass data from child to parent
             //isFavouriteData: this.isFavouriteProp
             reactiveVoertuigData: this.voertuigStore.getVoertuigList,
-            voertuigDataInArrayLength: this.voertuigStore.getVoertuigList.length,
+            voertuigDataInArrayLength: this.voertuigStore.getVoertuigList.length
             //voertuigDataInArray: fruits.push({ name: 'Banana', amount: 4 });
-            
-            //voertuigData
-            selected: "",
-            categories: ["science", "history", "poetry", "math"],
-            customVoertuigen: [
-                {
-                name: "customopel",
-                kenteken: "00-00-00",
-                type: "auto",
-                },
-                {
-                name: "customFord",
-                kenteken: "00-00-00",
-                type: "auto",
-                },
-                {
-                name: "customVolkswagen",
-                kenteken: "00-00-00",
-                type: "auto",
-                },
-            ],
-                newTitle: "",
-                newAuthor: "",
-                newLabel: "",
-      
-        };
+        }
     },
     methods: {
         setCustomParams(){
@@ -606,24 +578,6 @@ export default {
                 </form>
         </aside>
     <main  class="col-sm-12 col-md-9">
-        <section>
-            <form>
-                <h3>Add voertuig</h3>
-                <div class="form-group">    
-                    <!-- <form-field-comp :input-field-id-prop="data" :inputFieldValueProp="emitedObject.inputFieldValueKey" :inputFieldNameProp="emitedObject.inputFieldNameKey" >
-                        
-                    </form-field-comp> -->
-                    <form-field-comp :input-field-id-prop="00">
-                        
-                    </form-field-comp>
-                </div>
-                <div class="form-group">
-                    
-                </div>
-            
-            <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </section>
         <section>
             <ul class="paginationComp test" ref="inputElementRef" >
                 <pagination-comp v-for="(voertuig, index) in this.setPagesNav" :key="index" :pagination-index-prop="index"
