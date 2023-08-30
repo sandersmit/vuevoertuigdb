@@ -6,26 +6,14 @@
             <!-- <router-link   :to="`/voertuigdetailpage/${voertuigIdProp}`" @click="updateUserHistory()">
                 id: {{ voertuigIdProp}} - index: {{ indexProp}} merk: {{voertuigNameProp}} handbena:{{voertuigHandelsbenamingProp}} kenteken: {{ voertuigKentekenProp }}</router-link>
          -->
-        <!-- <input type="text"
+         <label class="form-input-label">{{inputFieldNameProp}}</label>
+        <input type="text" 
         :id="`${inputFieldIdProp}`"
-        :class="inputFieldIdProp==0 ?'active':''"
-        class="form-control" 
-        :value="`${inputFieldValueProp}`" 
-        :for="`${inputFieldIdProp}`"
-        @input="inputFieldValuePropEmit"
-        aria-describedby="inputFieldNameProp"
-        placeholder="inputFieldNameProp"
-        >         -->
-        <input type="text" :id="`${inputFieldIdProp}`"
-        class="inputFieldIdProp==0 ?'active':''"
-        aria-describedby="inputFieldNameProp"
-        placeholder="inputFieldNameProp"
-        >                                 
-        <label :for="`${inputboxValueProp}`" class="form-input-label">{{inputFieldNameProp}}</label>
+        class="inputFieldIdProp==0 ?'active':'' form-control"
+        :aria-describedby="`${inputFieldNameProp}`"
+        placeholder="inputFieldPlaceholder"
+        v-model="inputvaluedata">                                 
         
-  
-    {{ inputFieldValueKey }}
- 
 </template>
 <script>
 import { ref } from 'vue'
@@ -34,9 +22,9 @@ export default{
      //using composition api with setup() as am option from the option API
      setup() {
         const voertuigObj = ref(
-            {inputFieldKey:""},
-            {inputFieldValueKey:""},
-            {inputFieldNameKey:""}
+            // {inputFieldKey:""},
+            // {inputFieldValueKey:""},
+            // {inputFieldNameKey:""}
             )
         return {voertuigObj}
             
@@ -53,11 +41,11 @@ export default{
                     type:Number,
                     required: true
                 },
-            indexProp:{
-                type:Number,
+            inputFieldNameProp:{
+                type:String,
                 required: true
             },
-            inputFieldNameProp:{
+            inputFieldPlaceholder:{
                 type:String,
                 required: true
             },
@@ -69,6 +57,7 @@ export default{
     data() {
         return {
             detailsAreVisible: false,
+            inputvaluedata:""
         }
     },
      //to comunicate for developers on howmany or wich emit events there are. 
@@ -90,7 +79,7 @@ export default{
             //emitting custom event 'emit-custom-event' => to parent comp
             // passing 'custom event name' + argument
             this.selected =! this.selected;
-            console.log("this.selected?:"+ this.selected)
+            console.log("this.selected?:"+ this.inputvaluedata)
             //console.log("checkboxValuePropEmit:"+ this.togglecheckboxEl[0])
            // console.log("checkboxValuePropEmit:"+ this.checkboxNameProp)
           

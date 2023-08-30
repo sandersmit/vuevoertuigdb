@@ -16,6 +16,7 @@ import FormFieldComp from './components/forms/FormFieldComp.vue'
 import PaginationComp from './components/PaginationComp.vue';
 import TopNavBar from './components/TopNavBar.vue';
 import VoertuigComp from './components/VoertuigComp.vue';
+import CustomVoertuigComp from './components/CustomVoertuigComp.vue';
 import VoertuigDetailComp from './components/VoertuigDetailComp.vue';
 
 //thirdparty
@@ -42,6 +43,7 @@ AppNameConst.component('form-field-comp', FormFieldComp)
 AppNameConst.component('pagination-comp', PaginationComp)
 AppNameConst.component('top-nav-bar', TopNavBar)
 AppNameConst.component('voertuig-comp', VoertuigComp)
+AppNameConst.component('custom-voertuig-comp', CustomVoertuigComp)
 AppNameConst.component('voertuig-detail-comp', VoertuigDetailComp)
 
 //adding icon font to app instance 'AppNameConst'
