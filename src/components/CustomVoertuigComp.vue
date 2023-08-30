@@ -3,8 +3,8 @@
     <!-- USING 2 properties - Data properties & Props properties
     Prop properties you can use with only the prop name {{ nameProp }}
     Data properties you need to call with the dot notation: by {{Object.propertiename}} -->
-        <router-link   :to="`/voertuigdetailpage/${voertuigIdProp}`" @click="updateUserHistory()">
-          CUSTOM  id: {{ voertuigIdProp}} - index: {{ indexProp}} merk: {{voertuigNameProp}} handbena:{{voertuigHandelsbenamingProp}} kenteken: {{ voertuigKentekenProp }}</router-link>
+        <router-link   :to="`/voertuigdetailpage/${custVoertuigIdProp}`" @click="updateUserHistory()">
+          CUSTOM  id: {{ custVoertuigIdProp}} - index: {{ indexProp}} merk: {{cusVoertuigNameProp}} handbena:{{custVoertuigHandelsbenamingProp}} kenteken: {{ custVoertuigKentekenProp }}</router-link>
     </div>
 </template>
 <script>
@@ -87,9 +87,9 @@ text-decoration: none;
 padding: 1rem;
 display: block;
 border-bottom: solid 1px #484848;
-&:hover{
-    color:#f2f2f2
-}
+    &:hover{
+        color:#f2f2f2
+    }
 }
 
 </style>

@@ -9,10 +9,11 @@
          <label class="form-input-label">{{inputFieldNameProp}}</label>
         <input type="text" 
         :id="`${inputFieldIdProp}`"
-        class="inputFieldIdProp==0 ?'active':'' form-control"
+        class="form-control"
         :aria-describedby="`${inputFieldNameProp}`"
-        placeholder="inputFieldPlaceholder"
-        v-model="inputvaluedata">                                 
+        :placeholder="`${inputFieldPlaceholderProp}`"
+        :v-model="`${inputFieldValueProp}`">  
+        {{ inputFieldValueProp }}                               
         
 </template>
 <script>
@@ -45,11 +46,15 @@ export default{
                 type:String,
                 required: true
             },
-            inputFieldPlaceholder:{
+            inputFieldPlaceholderProp:{
                 type:String,
                 required: true
             },
             inputFieldValueProp:{
+                type:String,
+                required: true
+            },
+            ariaDescribedbyPrp:{
                 type:String,
                 required: true
             }

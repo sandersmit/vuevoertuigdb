@@ -2,6 +2,7 @@
 import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import FormFieldComp from '../components/forms/FormFieldComp.vue';
 import VoertuigComp from '../components/VoertuigComp.vue';
+import CustomVoertuigComp from '../components/CustomVoertuigComp.vue';
 import PaginationComp from '../components/PaginationComp.vue';
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
@@ -17,15 +18,16 @@ export default {
         const route = useRoute();
         const composeUrlTrack = useUrlTrack();
         const brandArrayRef = ref([])
-        const customBrandArrayRef = ref([{name:'custom opel',kenteken:'00-00-00'},{name:'custom Ford',kenteken:'11-11-11'}])
+        const customBrandArrayRef = ref([{custvoertuignameData:'custom opel',custvoertuigkentekenData:'00-00-00',custvoertuighandelsnaamData:'optimus', custvoertuigsoortData:'personenauto'},{custvoertuighandelsnaamData:'custom Ford',custvoertuigkentekenData:'11-11-11',custvoertuighandelsnaamData:'optimus', custvoertuigsoortData:'personenauto'}])
         const inputfieldsObjRef = ref({inputfield1:"merknaam", inputfield2:"kenteken", inputfield3:"handelsbenaming", inputfield4:"type" })
         //refs
         const userhistory = ref(false);
         const totalResults = ref(0)
+        const inputElementRef = ref(null)
 
         onMounted(() => {
          //console.log("onMounted() lifecycle Reactive Voertuigpage");
-        // console.log(inputElementRef.value.className);
+        console.log(inputElementRef.value.className);
          //inputElementRef.value
         })
 
@@ -37,7 +39,8 @@ export default {
             totalResults,
             brandArrayRef,
             customBrandArrayRef,
-            inputfieldsObjRef
+            inputfieldsObjRef,
+            inputElementRef
         }
     },
     //end using composition api with setup()
@@ -75,46 +78,30 @@ export default {
             //isFavouriteData: this.isFavouriteProp
             reactiveVoertuigData: this.voertuigStore.getVoertuigList,
             voertuigDataInArrayLength: this.voertuigStore.getVoertuigList.length,
-            //voertuigDataInArray: fruits.push({ name: 'Banana', amount: 4 });
             
-            //voertuigData
+            //initial data state add form & fields comp
             inputFormTitle: "Addvoertuig",
-            customVoertuigen: [
-                {
-                name: "customopel",
-                kenteken: "00-00-00",
-                type: "auto",
-                },
-                {
-                name: "customFord",
-                kenteken: "00-00-00",
-                type: "auto",
-                },
-                {
-                name: "customVolkswagen",
-                kenteken: "00-00-00",
-                type: "auto",
-                },
-            ],
-            //initial state add form fields
-                name: "",
-                kenteken: "",
-                type: "",
+            custvoertuignameData: "",
+            custvoertuigkentekenData: "",
+            custvoertuighandelsnaamData: "",
+            custvoertuigsoortData:"",
       
         };
     },
     methods: {
         addCustomItem() {
             console.log("addcustomitem")
-        let addvoertuigObj = {
-            name: this.name,
-            kenteken: this.kenteken,
-            type: this.type,
-        };
-        this.customVoertuigen.push(addvoertuigObj);
-        //reset fields
-        (this.newAuthor = ""), (this.newTitle = ""), (this.newLabel = "");
-    },
+            let addvoertuigObj = {
+                custvoertuignameData: this.custvoertuignameData,
+                custvoertuigkentekenData: this.custvoertuigkentekenData,
+                custvoertuighandelsnaamData: this.custvoertuighandelsnaamData,
+                custvoertuigsoortData:this.custvoertuignameData,
+            };
+            this.customBrandArrayRef.push(addvoertuigObj);
+            //this.customVoertuigen.push(addvoertuigObj);
+            //reset fields
+            (this.newAuthor = ""), (this.newTitle = ""), (this.newLabel = "");
+        },
         setCustomParams(){
            
             let baseUrl = `http://localhost:5184/#/voertuigenpage?`;
@@ -309,20 +296,9 @@ export default {
     // so only to check and return or display allready-known & 
     // -calculated values (from methods:) to the user-interface
     computed: {
-        // keepSelectedComputed(){
-        //      //reset ref
-        //     //console.log(this.voertuigStore.getVoertuigByBrand('OPEL') )
-        //     //let updatebrandsArr = [];
-        //    this.merkFiltersSelected.forEach(keepbrand);
-        //             function keepbrand(keepitem, index){
-        //                 //merkFiltersSelected.length
-        //                 console.log(keepitem)
-        //                 //Passing arguments to getters
-        //                return this.voertuigStore.getVoertuigByBrand("FORD");
-        //             }
-        //    // return updatebrandsArr;
-           
-        // },
+        computeCustomitems(){
+            return this.customBrandArrayRef
+        },
         setPages() {
             // console.log("computed startrange setPages():" + this.setStartRange())
             return this.setStartRange();
@@ -621,33 +597,44 @@ export default {
         <section>
             <form @submit.prevent="addCustomItem">
                     <h3>Add custom voertuig</h3>
-                    <div class="form-group">    
-                        <!-- <form-field-comp :input-field-id-prop="data" :inputFieldValueProp="emitedObject.inputFieldValueKey" :inputFieldNameProp="emitedObject.inputFieldNameKey" >
-                        </form-field-comp> -->
-                        <form-field-comp :input-field-id-prop='0' ::input-field-name-prop="inputfieldsObjRef.inputfield1" >         
+                    {{ custvoertuignameData }}
+                    <div class="form-group" ref="inputElementRef">    
+                        <form-field-comp   :v-model="this.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
                         </form-field-comp>
                     </div>
                     <div class="form-group">
-                        <form-field-comp :input-field-id-prop='1' :input-field-name-prop="inputfieldsObjRef.inputfield2" >         
+                        <form-field-comp :input-field-id-prop='1' :input-field-name-prop="inputfieldsObjRef.inputfield2" :input-field-placeholder-prop="inputfieldsObjRef.inputfield2" >         
                         </form-field-comp>
                     </div>
                     <div class="form-group">
-                        <form-field-comp :input-field-id-prop='3' :input-field-name-prop="inputfieldsObjRef.inputfield3" >         
+                        <form-field-comp :input-field-id-prop='3' :input-field-name-prop="inputfieldsObjRef.inputfield3" :input-field-placeholder-prop="inputfieldsObjRef.inputfield3" >         
                         </form-field-comp>
                     </div>
                     <div class="form-group">
-                        <form-field-comp :input-field-id-prop='4' :input-field-name-prop="inputfieldsObjRef.inputfield4" >         
+                        <form-field-comp :input-field-id-prop='4' :input-field-name-prop="inputfieldsObjRef.inputfield4" :input-field-placeholder-prop="inputfieldsObjRef.inputfield4">         
                         </form-field-comp>
                     </div>
                 <button type="submit" class="btn btn-primary my-3" >Submit custom car</button>
             </form>
         </section>
         <section>
-            <ul class="paginationComp test" ref="inputElementRef" >
+            <ul class="paginationComp test">
                 <pagination-comp v-for="(voertuig, index) in this.setPagesNav" :key="index" :pagination-index-prop="index"
                     :pagination-id-prop="index" :current-page-prop="index"    @emit-array-range="emitArrayRange">
                 </pagination-comp>
             </ul>
+            <div class="resultsTotal">
+              Total results:  {{ this.customBrandArrayRef.length }} 
+            </div>
+            <div class="results"> 
+                <mark>Added custom voertuigen : {{ this.customBrandArrayRef }}</mark>
+                <custom-voertuig-comp v-for="(voertuig, index) in this.computeCustomitems"
+                    :key="index" :index-prop="index" :cust-voertuig-id-prop="voertuig.id" :voertuig-name-prop="voertuig.merk"
+                    :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
+                    :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
+                    @emit-update-user-history="emitUpdateUserHistory">
+                </custom-voertuig-comp>
+            </div>
             <div class="resultsTotal">
               Total results:  {{ computeResults }} 
             </div>
@@ -672,7 +659,7 @@ export default {
             </div>
             <div class="results filterResultsfalse searchresultstrue filtercheckboxfalse" v-if="filterResults == false && searchText!=null && filtercheckbox==false">
                 <mark>default results- filterResults: {{ filterResults }}</mark>
-                <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.searchVoertuigen.slice(this.setPages, this.setEndRange())"
+                <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.inputfieldsObjRef.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
                     :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
@@ -743,8 +730,10 @@ mark{
     flex-direction: column;
     align-items: flex-start;
     list-style: none;
+    padding: 0px;
         li {
             list-style: none;
+            padding: 0.5rem 0px;
         }
 }
 h3{
@@ -768,6 +757,7 @@ form{
     color:#636363;
     background-color: #282828;
     padding: 1rem;
+    border-radius: 0.5rem;
     legend{
         font-size: 1rem;
         padding-top: 1rem;
@@ -778,7 +768,11 @@ form{
 }
 .btn{
  background-color: #282828;
- color: #636363;
+ color: #aac8e4;
+ border: solid 1px #33a06f;
+ display: block;
+
+ 
 }
 
 
