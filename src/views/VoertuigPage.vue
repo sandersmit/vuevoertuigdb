@@ -18,7 +18,7 @@ export default {
         const composeUrlTrack = useUrlTrack();
         const brandArrayRef = ref([])
         const customBrandArrayRef = ref([{name:'custom opel',kenteken:'00-00-00'},{name:'custom Ford',kenteken:'11-11-11'}])
-
+        const inputfieldsObjRef = ref({inputfield1:"merknaam", inputfield2:"kenteken", inputfield3:"handelsbenaming", inputfield4:"type" })
         //refs
         const userhistory = ref(false);
         const totalResults = ref(0)
@@ -36,7 +36,8 @@ export default {
             composeUrlTrack,
             totalResults,
             brandArrayRef,
-            customBrandArrayRef
+            customBrandArrayRef,
+            inputfieldsObjRef
         }
     },
     //end using composition api with setup()
@@ -77,8 +78,7 @@ export default {
             //voertuigDataInArray: fruits.push({ name: 'Banana', amount: 4 });
             
             //voertuigData
-            selected: "",
-            categories: ["science", "history", "poetry", "math"],
+            inputFormTitle: "Addvoertuig",
             customVoertuigen: [
                 {
                 name: "customopel",
@@ -96,13 +96,25 @@ export default {
                 type: "auto",
                 },
             ],
-                newTitle: "",
-                newAuthor: "",
-                newLabel: "",
+            //initial state add form fields
+                name: "",
+                kenteken: "",
+                type: "",
       
         };
     },
     methods: {
+        addCustomItem() {
+            console.log("addcustomitem")
+        let addvoertuigObj = {
+            name: this.name,
+            kenteken: this.kenteken,
+            type: this.type,
+        };
+        this.customVoertuigen.push(addvoertuigObj);
+        //reset fields
+        (this.newAuthor = ""), (this.newTitle = ""), (this.newLabel = "");
+    },
         setCustomParams(){
            
             let baseUrl = `http://localhost:5184/#/voertuigenpage?`;
@@ -607,21 +619,27 @@ export default {
         </aside>
     <main  class="col-sm-12 col-md-9">
         <section>
-            <form>
-                <h3>Add voertuig</h3>
-                <div class="form-group">    
-                    <!-- <form-field-comp :input-field-id-prop="data" :inputFieldValueProp="emitedObject.inputFieldValueKey" :inputFieldNameProp="emitedObject.inputFieldNameKey" >
-                        
-                    </form-field-comp> -->
-                    <form-field-comp :input-field-id-prop="00">
-                        
-                    </form-field-comp>
-                </div>
-                <div class="form-group">
-                    
-                </div>
-            
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <form @submit.prevent="addCustomItem">
+                    <h3>Add custom voertuig</h3>
+                    <div class="form-group">    
+                        <!-- <form-field-comp :input-field-id-prop="data" :inputFieldValueProp="emitedObject.inputFieldValueKey" :inputFieldNameProp="emitedObject.inputFieldNameKey" >
+                        </form-field-comp> -->
+                        <form-field-comp :input-field-id-prop='0' ::input-field-name-prop="inputfieldsObjRef.inputfield1" >         
+                        </form-field-comp>
+                    </div>
+                    <div class="form-group">
+                        <form-field-comp :input-field-id-prop='1' :input-field-name-prop="inputfieldsObjRef.inputfield2" >         
+                        </form-field-comp>
+                    </div>
+                    <div class="form-group">
+                        <form-field-comp :input-field-id-prop='3' :input-field-name-prop="inputfieldsObjRef.inputfield3" >         
+                        </form-field-comp>
+                    </div>
+                    <div class="form-group">
+                        <form-field-comp :input-field-id-prop='4' :input-field-name-prop="inputfieldsObjRef.inputfield4" >         
+                        </form-field-comp>
+                    </div>
+                <button type="submit" class="btn btn-primary my-3" >Submit custom car</button>
             </form>
         </section>
         <section>
@@ -748,6 +766,8 @@ ul{
 
 form{
     color:#636363;
+    background-color: #282828;
+    padding: 1rem;
     legend{
         font-size: 1rem;
         padding-top: 1rem;
