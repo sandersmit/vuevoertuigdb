@@ -12,8 +12,12 @@
         class="form-control"
         :aria-describedby="`${inputFieldNameProp}`"
         :placeholder="`${inputFieldPlaceholderProp}`"
-        :v-model="`${inputFieldValueProp}`">  
-        {{ inputFieldValueProp }}                               
+        :value="inputFieldValueProp"
+        @input="inputFieldValuePropEmit"
+        >
+       <!-- works with $emit(update:.. & v-model on parent-->
+        <!-- @input="inputFieldValuePropEmit" 
+        :value="inputFieldValueProp" -->
         
 </template>
 <script>
@@ -23,12 +27,11 @@ export default{
      //using composition api with setup() as am option from the option API
      setup() {
         const voertuigObj = ref(
-            // {inputFieldKey:""},
+            //{inputFieldKey:this.inputfieldvaluedata}
             // {inputFieldValueKey:""},
             // {inputFieldNameKey:""}
             )
-        return {voertuigObj}
-            
+        return {voertuigObj}  
     },
     //end using composition api with setup()
     //Make Vue aware of the props
@@ -52,6 +55,7 @@ export default{
             },
             inputFieldValueProp:{
                 type:String,
+                default:'',
                 required: true
             },
             ariaDescribedbyPrp:{
@@ -62,37 +66,29 @@ export default{
     data() {
         return {
             detailsAreVisible: false,
-            inputvaluedata:""
+           // inputfieldvaluedata:""
         }
     },
      //to comunicate for developers on howmany or wich emit events there are. 
      emits:[
     // 'emit-custom-event',
     // 'delete-event-emit'
-    'input-field-value-prop-emit'
+    //'input-field-value-prop-emit',
     ],
     methods: {
-         togleClassname:function(){  
-          this.dataProp = !this.dataProp;
-          console.log(`toggle ${this.value1}`);
-         },
-        inputFieldValuePropEmit:function(){  
-            //console.log(this.togglecheckboxEl)
-             console.log("this.togglecheckboxEl")
-           //this.setCheckbox();
+        inputFieldValuePropEmit:function($event){  
             //LET OP!
             //emitting custom event 'emit-custom-event' => to parent comp
             // passing 'custom event name' + argument
-            this.selected =! this.selected;
-            console.log("this.selected?:"+ this.inputvaluedata)
-            //console.log("checkboxValuePropEmit:"+ this.togglecheckboxEl[0])
-           // console.log("checkboxValuePropEmit:"+ this.checkboxNameProp)
-          
-            if(inputFieldValueProp!=""){
-                this.$emit('input-field-value-prop-emit', voertuigObj)
-            }else{
-                console.log("show warning")
-            }
+            //this.inputFieldValueProp = $event.target.value;
+             console.log("inputFieldValuePropEmit!:"+ this.inputFieldValueProp)
+            //if(inputFieldValueProp!=""){
+            //name of the emit : payloadname -> named whats being emited //typescript
+            this.$emit('update:inputFieldValueProp', $event.target.value)
+            //this.$emit('input-field-value-prop-emit', $event.target.value)
+        //     }else{
+        //        console.log("show warning")
+        //    }
            
         },
     },

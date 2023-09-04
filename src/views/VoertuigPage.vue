@@ -7,6 +7,7 @@ import PaginationComp from '../components/PaginationComp.vue';
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
 import { ref } from 'vue'
+import { reactive } from "vue";
 import { useUrlTrack } from '../composables/composeUrlTrack';
 import { onMounted } from "vue";
 
@@ -24,7 +25,12 @@ export default {
         const userhistory = ref(false);
         const totalResults = ref(0)
         const inputElementRef = ref(null)
-
+        const formfieldsReactive = reactive({
+            custvoertuignameData: "",
+            custvoertuigkentekenData: "",
+            custvoertuighandelsnaamData: "",
+            custvoertuigsoortData:"",
+        })
         onMounted(() => {
          //console.log("onMounted() lifecycle Reactive Voertuigpage");
         console.log(inputElementRef.value.className);
@@ -40,7 +46,8 @@ export default {
             brandArrayRef,
             customBrandArrayRef,
             inputfieldsObjRef,
-            inputElementRef
+            inputElementRef,
+            formfieldsReactive
         }
     },
     //end using composition api with setup()
@@ -81,18 +88,18 @@ export default {
             
             //initial data state add form & fields comp
             inputFormTitle: "Addvoertuig",
-            custvoertuignameData: "",
-            custvoertuigkentekenData: "",
-            custvoertuighandelsnaamData: "",
-            custvoertuigsoortData:"",
-      
         };
     },
     methods: {
+        emitFieldVal(argument){
+            this.formfieldsReactive.custvoertuignameData = argument;
+            console.log(this.formfieldsReactive.custvoertuignameData)
+            //return argument
+        },
         addCustomItem() {
             console.log("addcustomitem")
             let addvoertuigObj = {
-                custvoertuignameData: this.custvoertuignameData,
+                custvoertuignameData: this.formfieldsReactive.custvoertuignameData,
                 custvoertuigkentekenData: this.custvoertuigkentekenData,
                 custvoertuighandelsnaamData: this.custvoertuighandelsnaamData,
                 custvoertuigsoortData:this.custvoertuignameData,
@@ -597,10 +604,16 @@ export default {
         <section>
             <form @submit.prevent="addCustomItem">
                     <h3>Add custom voertuig</h3>
-                    {{ custvoertuignameData }}
+                   v-model:{{ this.formfieldsReactive.custvoertuignameData }}
                     <div class="form-group" ref="inputElementRef">    
-                        <form-field-comp   :v-model="this.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
+                        <!-- <form-field-comp @input-field-value-prop-emit="emitFieldVal" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
+                        </form-field-comp> -->
+                        <form-field-comp  v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
                         </form-field-comp>
+
+                        <!-- works with $emit(update:.. & v-model on parent-->
+                        <!-- <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
+                        </form-field-comp> -->
                     </div>
                     <div class="form-group">
                         <form-field-comp :input-field-id-prop='1' :input-field-name-prop="inputfieldsObjRef.inputfield2" :input-field-placeholder-prop="inputfieldsObjRef.inputfield2" >         
