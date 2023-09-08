@@ -19,7 +19,7 @@ export default {
         const route = useRoute();
         const composeUrlTrack = useUrlTrack();
         const brandArrayRef = ref([])
-        const customBrandArrayRef = ref([{custvoertuignameData:'custom opel',custvoertuigkentekenData:'00-00-00',custvoertuighandelsnaamData:'optimus', custvoertuigsoortData:'personenauto'},{custvoertuighandelsnaamData:'custom Ford',custvoertuigkentekenData:'11-11-11',custvoertuighandelsnaamData:'optimus', custvoertuigsoortData:'personenauto'}])
+        const customBrandArrayRef = ref([{custvoertuignameData:'CUSTOM OPEL',custvoertuigkentekenData:'00-00-00',custvoertuighandelsnaamData:'OPTIMUS', custvoertuigsoortData:'PERSONENAUTO'},{custvoertuignameData:'CUSTOM FORD',custvoertuigkentekenData:'11-11-11',custvoertuighandelsnaamData:'PRIME', custvoertuigsoortData:'PERSONENAUTO'}])
         const inputfieldsObjRef = ref({inputfield1:"merknaam", inputfield2:"kenteken", inputfield3:"handelsbenaming", inputfield4:"type" })
         //refs
         const userhistory = ref(false);
@@ -91,18 +91,18 @@ export default {
         };
     },
     methods: {
-        emitFieldVal(argument){
-            this.formfieldsReactive.custvoertuignameData = argument;
-            console.log(this.formfieldsReactive.custvoertuignameData)
-            //return argument
-        },
+        // emitFieldVal(argument){
+        //     this.formfieldsReactive.custvoertuignameData = argument;
+        //     console.log(this.formfieldsReactive.custvoertuignameData)
+        //     //return argument
+        // },
         addCustomItem() {
             console.log("addcustomitem")
             let addvoertuigObj = {
-                custvoertuignameData: this.formfieldsReactive.custvoertuignameData,
-                custvoertuigkentekenData: this.custvoertuigkentekenData,
-                custvoertuighandelsnaamData: this.custvoertuighandelsnaamData,
-                custvoertuigsoortData:this.custvoertuignameData,
+                custvoertuignameData: this.formfieldsReactive.custvoertuignameData.toUpperCase(),
+                custvoertuigkentekenData: this.formfieldsReactive.custvoertuigkentekenData.toUpperCase(),
+                custvoertuighandelsnaamData: this.formfieldsReactive.custvoertuighandelsnaamData.toUpperCase(),
+                custvoertuigsoortData: this.formfieldsReactive.custvoertuigsoortData.toUpperCase(),
             };
             this.customBrandArrayRef.push(addvoertuigObj);
             //this.customVoertuigen.push(addvoertuigObj);
@@ -234,6 +234,30 @@ export default {
             this.userhistory = true;
             //console.log(this.userhistory);
 
+        },
+        onEmitRemoveCustCar:function(payload){
+       
+            // this.customBrandArrayRef.filter((deleteItem, index)=>{
+            //     if(index == payload){
+            //         //this.brandArrayRef.push(argument);
+            //         let findindex = this.customBrandArrayRef.indexOf(index);
+            //         console.log("delete"+ "payload:"+ payload ,+"index:"+index );
+            //         console.log(this.customBrandArrayRef);
+            //        // this.voertuigStore.deleteVoertuigByBrand(argument.thisCheckboxName);
+            //         delete this.customBrandArrayRef[findindex]; 
+            //     }
+            // }
+                for( var i = 0; i < this.customBrandArrayRef.length; i++){ 
+                    console.log("use indexOf on item: " +  this.customBrandArrayRef[i].custvoertuignameData)
+                    if (  i === payload) { 
+                        console.log("payload:" + payload)
+                        this.customBrandArrayRef.splice(payload, 1); 
+                       // i--; 
+                    }
+                //To remove the duplicates, you use the filter() method to include only 
+                //elements whose indexes match their indexOf values:
+                //return removedItem
+            }
         },
         setStartRange() {
             //return this.setTotalPages ;
@@ -531,7 +555,7 @@ export default {
             <li>computeUrlTrack: {{ this.computeUrlTrack  }}</li> -->
           </ul>  
             <h3>show history</h3>
-            <ul class="history" v-if="this.voertuigStore.getHistoryList.length > 0" v-for="(historyItem, index) in this.voertuigStore.getHistoryList">
+            <ul class="history" v-if="this.voertuigStore.getHistoryList.length > 0" v-for="(historyItem, index) in this.voertuigStore.getHistoryList"  :key="index" >
                 <li>{{ index }}: {{ historyItem }}
                 <span>
                     <router-link :to="`/voertuigdetailpage/${historyItem}`">
@@ -605,28 +629,41 @@ export default {
             <form @submit.prevent="addCustomItem">
                     <h3>Add custom voertuig</h3>
                    v-model:{{ this.formfieldsReactive.custvoertuignameData }}
-                    <div class="form-group" ref="inputElementRef">    
+                    <div class="form-group" ref="inputElementRef">  
+                        <div class="form-group">
+                            <!-- v-model binds the valueProp from the child comp with the Data object from the parent comp-->
+                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1" :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
+                            </form-field-comp> 
+                        </div> 
+                        <div class="form-group">
+                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuigkentekenData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='1'  :input-field-name-prop="inputfieldsObjRef.inputfield2" :input-field-placeholder-prop="inputfieldsObjRef.inputfield2">         
+                            </form-field-comp> 
+                        </div>
+                        <div class="form-group">
+                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuighandelsnaamData" :aria-describedby-prop="inputfieldsObjRef.inputfield3"  :input-field-id-prop='2'  :input-field-name-prop="inputfieldsObjRef.inputfield3" :input-field-placeholder-prop="inputfieldsObjRef.inputfield3">         
+                            </form-field-comp> 
+                        </div>
+                        <div class="form-group">
+                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuigsoortData" :aria-describedby-prop="inputfieldsObjRef.inputfield4" :input-field-id-prop='4' :input-field-name-prop="inputfieldsObjRef.inputfield4" :input-field-placeholder-prop="inputfieldsObjRef.inputfield4">         
+                            </form-field-comp> 
+                        </div>
+                    </div>
                         <!-- <form-field-comp @input-field-value-prop-emit="emitFieldVal" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
                         </form-field-comp> -->
-                        <form-field-comp  v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
-                        </form-field-comp>
-
+                        <!-- <form-field-comp  v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
+                        </form-field-comp> -->
                         <!-- works with $emit(update:.. & v-model on parent-->
                         <!-- <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
                         </form-field-comp> -->
-                    </div>
-                    <div class="form-group">
-                        <form-field-comp :input-field-id-prop='1' :input-field-name-prop="inputfieldsObjRef.inputfield2" :input-field-placeholder-prop="inputfieldsObjRef.inputfield2" >         
-                        </form-field-comp>
-                    </div>
-                    <div class="form-group">
+                    
+                    <!-- <div class="form-group">
                         <form-field-comp :input-field-id-prop='3' :input-field-name-prop="inputfieldsObjRef.inputfield3" :input-field-placeholder-prop="inputfieldsObjRef.inputfield3" >         
                         </form-field-comp>
                     </div>
                     <div class="form-group">
                         <form-field-comp :input-field-id-prop='4' :input-field-name-prop="inputfieldsObjRef.inputfield4" :input-field-placeholder-prop="inputfieldsObjRef.inputfield4">         
                         </form-field-comp>
-                    </div>
+                    </div> -->
                 <button type="submit" class="btn btn-primary my-3" >Submit custom car</button>
             </form>
         </section>
@@ -640,12 +677,16 @@ export default {
               Total results:  {{ this.customBrandArrayRef.length }} 
             </div>
             <div class="results"> 
-                <mark>Added custom voertuigen : {{ this.customBrandArrayRef }}</mark>
+                <mark>Added custom voertuigen : <pre> {{ this.customBrandArrayRef }}</pre></mark>
                 <custom-voertuig-comp v-for="(voertuig, index) in this.computeCustomitems"
-                    :key="index" :index-prop="index" :cust-voertuig-id-prop="voertuig.id" :voertuig-name-prop="voertuig.merk"
-                    :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
-                    :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
-                    @emit-update-user-history="emitUpdateUserHistory">
+                    :key="index" :index-prop="index"
+                    :cust-voertuig-id-prop="index" 
+                    :cust-voertuig-name-prop="voertuig.custvoertuignameData"
+                    :cust-voertuig-soort-prop="voertuig.custvoertuigsoortData" 
+                    :cust-voertuig-kenteken-prop="voertuig.custvoertuigkentekenData"
+                    :cust-voertuig-handelsbenaming-prop="voertuig.custvoertuighandelsnaamData"
+                    @emit-update-user-history="emitUpdateUserHistory"
+                    @emit-remove-cust-car="onEmitRemoveCustCar">
                 </custom-voertuig-comp>
             </div>
             <div class="resultsTotal">

@@ -58,7 +58,7 @@ export default{
                 default:'',
                 required: true
             },
-            ariaDescribedbyPrp:{
+            ariaDescribedbyProp:{
                 type:String,
                 required: true
             }

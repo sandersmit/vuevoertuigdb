@@ -15,6 +15,7 @@ import AboutPage from '../views/AboutPage.vue';
 
 import VoertuigPage from '../views/VoertuigPage.vue';
 import VoertuigDetailPage from '../views/VoertuigDetailPage.vue';
+import VoertuigEditPage from '../views/VoertuigEditPage.vue'
 
 
 //setting a constant for the imported 'vue-router' call it : router
@@ -54,6 +55,15 @@ const router = createRouter({
             props: true,
             //component: () => import("@/views/VoertuigDetailPage.vue")
             component: VoertuigDetailPage
+        },
+        {
+            path:"/voertuigeditpage/:voertuigidparam",
+            //:passed prop :voertuigidparam
+            //to component:VoertuigDetailpage
+            //name:'VoertuigDetail',
+            props: true,
+            //component: () => import("@/views/VoertuigDetailPage.vue")
+            component: VoertuigEditPage
         }
     ],                                                                          
 });

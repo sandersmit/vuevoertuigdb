@@ -4,7 +4,9 @@
     Prop properties you can use with only the prop name {{ nameProp }}
     Data properties you need to call with the dot notation: by {{Object.propertiename}} -->
         <router-link   :to="`/voertuigdetailpage/${custVoertuigIdProp}`" @click="updateUserHistory()">
-          CUSTOM  id: {{ custVoertuigIdProp}} - index: {{ indexProp}} merk: {{cusVoertuigNameProp}} handbena:{{custVoertuigHandelsbenamingProp}} kenteken: {{ custVoertuigKentekenProp }}</router-link>
+          CUSTOM  id: {{ custVoertuigIdProp}} - index: {{ indexProp}} merk: {{custVoertuigNameProp}} handbena:{{custVoertuigHandelsbenamingProp}} kenteken: {{ custVoertuigKentekenProp }}</router-link>
+    
+          <router-link  class="button" :to="`/voertuigeditpage/${custVoertuigIdProp}`">Edit</router-link><button @click="removeCustomCar">remove</button>
     </div>
 </template>
 <script>
@@ -30,7 +32,7 @@ props: {
             type:Number,
             required: true
         },
-        cusVoertuigNameProp:{
+        custVoertuigNameProp:{
             type:String,
             required: true
         },
@@ -69,6 +71,12 @@ methods: {
     //     // passing 'custom event name' + argument
        this.$emit('emit-update-user-history', this.CustVoertuigKentekenProp)
     },
+    removeCustomCar:function(){  
+    //     //LET OP!
+    //     //emitting custom event 'emit-custom-event' => to parent comp
+    //     // passing 'custom event name' + argument
+       this.$emit('emit-remove-cust-car', this.custVoertuigIdProp)
+    },
 },
    //lifecyclehooks voor fetchen API data. 
 beforeCreate() {
@@ -89,6 +97,11 @@ display: block;
 border-bottom: solid 1px #484848;
     &:hover{
         color:#f2f2f2
+    }
+    &.button{
+        color:#484848;
+        border-bottom: solid 0px #484848; 
+        display: inline-block; 
     }
 }
 

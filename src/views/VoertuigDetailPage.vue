@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { useUrlTrack } from '../composables/composeUrlTrack';
+import router from '../router/index';
 
 
 
@@ -21,14 +22,19 @@ export default {
 params.set("baz", 3);
 params.toString(); // "foo=1&bar=2&baz=3"
 
-
+//METHODS
+const goBack = () => {
+            console.log("goback");
+            router.go(-1)
+        }
       return {
         voertuigStore,
         route,
         params,
         url,
         urltrack,
-        composeUrlTrack
+        composeUrlTrack,
+        goBack
         }
     },
     //end using composition api with setup()
@@ -113,13 +119,13 @@ params.toString(); // "foo=1&bar=2&baz=3"
         <main  class="col-sm-12 col-md-9">     
           <h2>show items on id</h2>
             <ul>
-              <li v-for="(value, key) in voertuigStore.getVoertuigList[route.params.voertuigidparam]">
+              <li v-for="(value, key) in voertuigStore.getVoertuigList[params.voertuigidparam]">
                       {{ key }}: {{ value }}
               </li>
             </ul>
           <h2>show from history by kenteken as id</h2>
             <ul>
-              <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken(route.params.voertuigidparam)">
+              <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken(params.voertuigidparam)">
                       {{ key }}: {{ value }}
               </li>
             </ul>
