@@ -102,7 +102,7 @@ export default {
       Data properties you need to call with the dot notation: by {{Object.propertiename}} -->
       <div class="row">
         <header class="col-12">
-            <h1>{{ this.title }}</h1>
+            <h3>{{ this.title }}title from props</h3>
         </header>
     </div>
     <div class="row">
