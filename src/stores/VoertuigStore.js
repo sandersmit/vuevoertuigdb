@@ -6,6 +6,7 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
   //The state is defined as a function returning the initial state
     state: function () {
         return {
+          currentUser:"Mister Smith",
           //reactiveDataSet
           reactiveVoertuiglist:[
 
@@ -23,6 +24,15 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
 
           ],
           selectedBrandVoertuiglist:[
+
+          ],
+          customBrandVoertuiglist:[
+            {
+              "custvoertuignameData": "CUSTOM OPEL",
+              "custvoertuigkentekenData": "00-00-00",
+              "custvoertuighandelsnaamData": "OPTIMUS",
+              "custvoertuigsoortData": "PERSONENAUTO"
+            }
 
           ]
         };
@@ -74,7 +84,7 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       getVoertuigByBrand:function (state) { 
               return function (newStoreUpdateParams) {
                
-                if( newStoreUpdateParams.valueSelected ){
+              if( newStoreUpdateParams.valueSelected ){
                 console.log("store keepitem true?: " + newStoreUpdateParams.valueSelected)
                   state.reactiveVoertuiglist.forEach(function (item, index) {
                  // console.log("filter keepitem?: " + keepitem + item.id)
@@ -166,12 +176,17 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
        //console.log("getAllBrands")
        this.reactiveVoertuiglist.forEach(addbrand);
                     function addbrand(item, index){
+                  //    console.log("getAllBrands")
                       state.brandVoertuiglist.push({
                         'id':index,
                         'merk': item.merk,
                       });
                     }
           return state.brandVoertuiglist
+      },
+      updateCustomBrandLists:function(state){
+        
+        return state.customBrandVoertuiglist;
       }
     },
     //Actions are functions that can also be asynchronous which are used to update the state

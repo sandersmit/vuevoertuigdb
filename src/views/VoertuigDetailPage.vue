@@ -129,22 +129,15 @@ const goBack = () => {
                       {{ key }}: {{ value }}
               </li>
             </ul>
-            <!-- <div  v-for="(voertuigdetail,index) in voertuigStore.getVoertuigList" > -->
-                <!-- <ul v-if="index == route.params.voertuigidparam">
-                 
-                </ul> -->
-                <!-- //for history items -->
-                <!-- <ul v-else-if="voertuigdetail.kenteken == route.params.voertuigidparam">
-                  <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken(voertuigdetail.kenteken)">
-                    {{ key }}: {{ value }}
-                  </li>
-                </ul> -->
-                <!-- <ul v-if="index == route.params.voertuigidparam">
-                  <li >
-                    automerk: {{voertuigdetail.merk }} index is: {{ index }} {{voertuigdetail.kenteken }}
-                  </li>
-                </ul> -->
-            <!-- </div> -->
+            <h2>show custom item</h2>
+            <ul>
+              <p v-if="loading">Loading posts...</p>
+              <p v-if="error">{{ error.message }}</p>
+              <li v-for="(value, key) in voertuigStore.customBrandVoertuiglist[route.params.voertuigidparam]">
+                      {{ key }}: {{ value }}
+              </li>
+            </ul>
+           
           </main>
         </div>
 </article>
