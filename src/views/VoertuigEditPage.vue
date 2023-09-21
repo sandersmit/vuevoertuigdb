@@ -1,7 +1,6 @@
 <script setup>
 import {  useRoute, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
-import { ref } from 'vue';
-import { reactive,computed,defineProps } from "vue";
+import { reactive,computed,defineProps,ref } from "vue";
 
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { storeToRefs } from "pinia"; 
@@ -113,6 +112,9 @@ const submitchangeStates = (inputFieldData) => {
 //const usernameState = computed(() => mapstState(voertuigStore, ["currentUser"]))
 const destructuredUserName = computed(() => currentUser )
 const destructuredVoertuigCustList = computed(() => customBrandVoertuiglist )
+
+//WATCHERS
+
 
 onBeforeRouteLeave((to, from) => {
     const answer = window.confirm(

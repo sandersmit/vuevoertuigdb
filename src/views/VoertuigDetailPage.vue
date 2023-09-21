@@ -107,7 +107,9 @@ const goBack = () => {
     </div>
     <div class="row">
         <aside class="col-sm-12 col-md-3">
-          <a href="voertuigenpage#/voertuigenpage" @click.prevent="composeUrlTrack.updateUrlTrack()" class="btn btn-outline-secondary">back</a>
+          <a href="voertuigenpage#/voertuigenpage" @click.prevent="goBack" class="btn btn-outline-secondary">
+            back</a>
+          <!-- <a href="voertuigenpage#/voertuigenpage" @click.prevent="composeUrlTrack.updateUrlTrack()" class="btn btn-outline-secondary">back</a> -->
           <ul>
             <!-- <li>url track: {{ computeUrlTrack }}</li> -->
             <li>composeUrlTrack:
@@ -115,21 +117,22 @@ const goBack = () => {
                <li>computeUrlTrack: {{ this.computeUrlTrack  }}</li>
           </ul>       
         </aside>
-   
         <main  class="col-sm-12 col-md-9">     
-          <h2>show items on id</h2>
+          <h2>show items on id ?{{ voertuigStore.getVoertuigList.length }}</h2>
+          show param: {{route.params.voertuigidparam}}
             <ul>
-              <li v-for="(value, key) in voertuigStore.getVoertuigList[params.voertuigidparam]">
+              <li v-for="(value, key) in voertuigStore.getVoertuigList[route.params.voertuigidparam]">
                       {{ key }}: {{ value }}
               </li>
             </ul>
-          <h2>show from history by kenteken as id</h2>
+          <h2>show from history by kenteken as id {{ voertuigStore.getVoertuigByKenteken.length }}</h2>
+              show param: {{route.params.voertuigidparam}}
             <ul>
-              <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken(params.voertuigidparam)">
+              <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken[route.params.voertuigidparam]">
                       {{ key }}: {{ value }}
               </li>
-            </ul>
-            <h2>show custom item</h2>
+            </ul> 
+            <h2>show from custom items {{ voertuigStore.customBrandVoertuiglist.length }}</h2>
             <ul>
               <p v-if="loading">Loading posts...</p>
               <p v-if="error">{{ error.message }}</p>
@@ -137,7 +140,6 @@ const goBack = () => {
                       {{ key }}: {{ value }}
               </li>
             </ul>
-           
           </main>
         </div>
 </article>
