@@ -74,6 +74,7 @@ export default{
     // 'emit-custom-event',
     // 'delete-event-emit'
     //'input-field-value-prop-emit',
+    
     ],
     methods: {
         inputFieldValuePropEmit:function($event){  
@@ -81,7 +82,7 @@ export default{
             //emitting custom event 'emit-custom-event' => to parent comp
             // passing 'custom event name' + argument
             //this.inputFieldValueProp = $event.target.value;
-             console.log("inputFieldValuePropEmit!:"+ this.inputFieldValueProp)
+             console.log("inputFieldValuePropEmit!:"+ $event.target.value )
             //if(inputFieldValueProp!=""){
             //name of the emit : payloadname -> named whats being emited //typescript
             this.$emit('update:inputFieldValueProp', $event.target.value)

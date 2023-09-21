@@ -1,15 +1,11 @@
 <script>
-import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import FormFieldComp from '../components/forms/FormFieldComp.vue';
 import VoertuigComp from '../components/VoertuigComp.vue';
-import CustomVoertuigComp from '../components/CustomVoertuigComp.vue';
 import PaginationComp from '../components/PaginationComp.vue';
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
-import { ref } from 'vue'
-import { reactive } from "vue";
+import { reactive, onMounted, ref} from "vue";
 import { useUrlTrack } from '../composables/composeUrlTrack';
-import { onMounted } from "vue";
 
 export default {
     //Setup option is happening before every option - used in option & composition API
@@ -33,7 +29,7 @@ export default {
         })
         onMounted(() => {
          //console.log("onMounted() lifecycle Reactive Voertuigpage");
-        console.log(inputElementRef.value.className);
+        //console.log(inputElementRef.value.className);
          //inputElementRef.value
         })
 
@@ -70,7 +66,7 @@ export default {
             totalnavsPagination: 10,
             vbindingtest: null,
             searchText: null,
-            filterSelect: "",
+            filterSelect: '',
             //reactiveDataSet
             selectedArgument:false,
             selectedName:'',
@@ -97,17 +93,21 @@ export default {
         //     //return argument
         // },
         addCustomItem() {
-            console.log("addcustomitem")
-            let addvoertuigObj = {
+            console.log("addcustomitem"+ this.voertuigStore.customBrandVoertuiglist.length)
+            let addCustvoertuigObj = {
                 custvoertuignameData: this.formfieldsReactive.custvoertuignameData.toUpperCase(),
                 custvoertuigkentekenData: this.formfieldsReactive.custvoertuigkentekenData.toUpperCase(),
                 custvoertuighandelsnaamData: this.formfieldsReactive.custvoertuighandelsnaamData.toUpperCase(),
                 custvoertuigsoortData: this.formfieldsReactive.custvoertuigsoortData.toUpperCase(),
             };
-            this.customBrandArrayRef.push(addvoertuigObj);
-            //this.customVoertuigen.push(addvoertuigObj);
+            //this.customBrandArrayRef.push(addCustvoertuigObj);
+            this.voertuigStore.updateCustomBrandLists.push(addCustvoertuigObj)
+            //this.voertuigStore.customBrandVoertuiglist.push(addCustvoertuigObj)
             //reset fields
-            (this.newAuthor = ""), (this.newTitle = ""), (this.newLabel = "");
+            this.formfieldsReactive.custvoertuignameData = "";
+            this.formfieldsReactive.custvoertuigkentekenData = "";
+            this.formfieldsReactive.custvoertuighandelsnaamData = "";
+            this.formfieldsReactive.custvoertuigsoortData = "";
         },
         setCustomParams(){
            
@@ -147,7 +147,9 @@ export default {
            
         },
         checkstores() {
-            console.log(this.voertuigStore.getChangedReactiveVoertuiglist)
+            console.log("checkstoress");
+            //console.log(this.voertuigStore.getChangedReactiveVoertuiglist)
+            console.log(this.voertuigStore.updateCustomBrandLists)
         },
         outputFilter($event) {
             //landen op pagina, met de juiste sortering, lezen uit de url params
@@ -198,14 +200,8 @@ export default {
         this.selectedName = argument.thisCheckboxName
 
         if(this.selectedArgument){
-            console.log("selected true- push??"+ argument.thisCheckboxName + argument.thisSelected )
-          
-            
-            this.merkFiltersSelected.push(this.selectedName);
-            //this.merkFiltersSelected.unshift(argument.thisCheckboxName);
-
-            //this.merkFiltersSelected.splice(0, 0, argument.thisCheckboxName)
-
+            console.log("selected name: "+argument.thisCheckboxName +" & value is: "+ argument.thisSelected )
+            this.merkFiltersSelected.push(argument.thisCheckboxName);
         }else{
             console.log("selection false- DONT push but DELETE: "+ argument.thisCheckboxName + argument.thisSelected);
            this.merkFiltersSelected.filter((deleteItem, index)=>{
@@ -247,11 +243,11 @@ export default {
             //         delete this.customBrandArrayRef[findindex]; 
             //     }
             // }
-                for( var i = 0; i < this.customBrandArrayRef.length; i++){ 
-                    console.log("use indexOf on item: " +  this.customBrandArrayRef[i].custvoertuignameData)
+                for( var i = 0; i < this.voertuigStore.customBrandVoertuiglist.length; i++){ 
+                    console.log("use indexOf on item: " +  this.voertuigStore.customBrandVoertuiglist[i].custvoertuignameData)
                     if (  i === payload) { 
                         console.log("payload:" + payload)
-                        this.customBrandArrayRef.splice(payload, 1); 
+                        this.voertuigStore.customBrandVoertuiglist.splice(payload, 1); 
                        // i--; 
                     }
                 //To remove the duplicates, you use the filter() method to include only 
@@ -285,6 +281,7 @@ export default {
                 //elements whose indexes match their indexOf values:
                 return this.brandArrayRef.indexOf(knownItem.merk) === index;
             });
+            console.log("collectbrands()");
              console.log(this.brandArrayRef.length);
         },
         keepSelected(){
@@ -327,8 +324,12 @@ export default {
     // so only to check and return or display allready-known & 
     // -calculated values (from methods:) to the user-interface
     computed: {
+        
+        // computeCustomitems(){
+        //     return this.customBrandArrayRef
+        // },
         computeCustomitems(){
-            return this.customBrandArrayRef
+            return this.voertuigStore.customBrandVoertuiglist;
         },
         setPages() {
             // console.log("computed startrange setPages():" + this.setStartRange())
@@ -347,7 +348,7 @@ export default {
             return this.voertuigStore.getChangedReactiveVoertuiglist
 
         },
-        searchVoertuigen() {
+        searchSortVoertuigen() {
             //i : filter on case-insenitive
             let searchTextfield = new RegExp(this.searchText, 'i')
             if (this.filterSelect != "") {
@@ -355,18 +356,26 @@ export default {
                 const searchedVoertuigen = this.sortVoertuigenMerk.filter(
                 function (item) {
                     return item.merk.match(searchTextfield);
-                    //return item;
                 });
                 return searchedVoertuigen
             }else{
-                console.log('filterSelect == ""');
-                console.log('searchVoertuigen using - getChangedReactiveVoertuiglist');
-                const searchedVoertuigen = this.voertuigStore.getChangedReactiveVoertuiglist.filter(
+                console.log('getChangedReactiveVoertuiglist');
+                return this.voertuigStore.getChangedReactiveVoertuiglist;
+            }
+        },
+        searchVoertuigen() {
+            //i : filter on case-insenitive
+            let searchTextfield = new RegExp(this.searchText, 'i')
+            if (this.searchText != null) {
+                console.log('searchText != null');
+                const searchedVoertuigen = this.sortVoertuigenMerk.filter(
                 function (item) {
                     return item.merk.match(searchTextfield);
                 });
-                //console.log(searchedVoertuigen.length)
                 return searchedVoertuigen
+            }else{
+                
+                return this.voertuigStore.getChangedReactiveVoertuiglist;
             }
         },
         //this is for shwowing the gui number "Aantal merken geselecteerd"
@@ -391,7 +400,7 @@ export default {
                 });
                 return selectedVoertuigen;
           }else{
-          //  console.log('searchVoertuigen using - getChangedReactiveVoertuiglist'+ this.filtercheckbox);
+          //  console.log('searchSortVoertuigen using - getChangedReactiveVoertuiglist'+ this.filtercheckbox);
             return this.voertuigStore.getChangedReactiveVoertuiglist;
            
           }
@@ -420,9 +429,9 @@ export default {
             //console.log(sortedVoertuigen);
         },
         computeResults(){
-            const newtotalResults =this.searchText!=null?this.searchVoertuigen.length:this.voertuigStore.getChangedReactiveVoertuiglist.length; 
-            //this.totalResults = this.searchVoertuigen.length; 
-            // console.log( this.searchVoertuigen.length)
+            const newtotalResults =this.searchText!=null?this.searchSortVoertuigen.length:this.voertuigStore.getChangedReactiveVoertuiglist.length; 
+            //this.totalResults = this.searchSortVoertuigen.length; 
+            // console.log( this.searchSortVoertuigen.length)
             // console.log( this.voertuigStore.getChangedReactiveVoertuiglist.length)
             return newtotalResults;
         },
@@ -441,7 +450,7 @@ export default {
         //     return this.voertuigStore.getBrandVoertuigList;
         // },
         updateSelectedBrands(){   
-            //console.log(this.merkFiltersSelected[0])
+           // console.log(this.merkFiltersSelected[0])
             const returnSelectedBrands = this.merkFiltersSelected.filter(showselected)
                 function showselected(item, index) {
                     console.log('updateSelectedBrands forEach item :'+ item +'index: '+index)
@@ -457,7 +466,7 @@ export default {
 
                 //only passing the first item in the returnSelectedBrands
                 
-             return this.voertuigStore.getVoertuigByBrand(storeUpdateParams);
+            return this.voertuigStore.getVoertuigByBrand(storeUpdateParams);
         }
     },
     //YOU repeat the names from //data properies  //for example 'counter'
@@ -506,7 +515,11 @@ export default {
         },
         searchText(value){
             console.log('watch searchText: ' + value)
-           // this.searchVoertuigen
+            if(!value){
+                console.log('set searchText to null')
+                this.searchText = null
+            }
+           // this.searchSortVoertuigen
         }
     },
     //options api lifecycle hook created()
@@ -526,8 +539,13 @@ export default {
     //   const paginationCompItem = document.querySelector(".item");
     //   paginationCompItem.classList.add('active');
      // document.querySelector(".item")[0].classList.add('active');
+   //console.log("onMounted() lifecycle show element ref");
+
    
-            //console.log("onMounted() lifecycle show element ref");
+   //add the first two default dummy data to the customBrandVoertuiglist         
+   //this.voertuigStore.customBrandVoertuiglist.push(this.customBrandArrayRef[0])
+   //console.log("onMounted() lifecycle "+ this.voertuigStore.customBrandVoertuiglist.length);
+            //customBrandArrayRef
             // console.log(inputElementRef.value.tagName);
             // inputElementRef.value.tagName
        
@@ -609,11 +627,10 @@ export default {
                         <hr>
                         Totaal aantal merken"{{ this.computeBrandArray.length }}
                         <hr>
-                        Aantal merken geselecteerd: {{ this.checkboxSelectedMerk.length }}
-                        geselecteerde voertuigen: {{ this.checkBoxSelectedArray }}
-                        <!-- {{this.merkFiltersSelected}} -->
+                        Aantal merken geselecteerd: {{ this.checkBoxSelectedArray.length }}
+                        Geselecteerde voertuigen: {{ this.checkBoxSelectedArray }}
                         <hr>
-                        <legend>filter op merk</legend>
+                        <legend>filter op merk <div>aantal merken <span>{{this.checkboxSelectedMerk.length}}</span></div></legend>
                     <filtercheckbox-comp v-for="(checkboxitem, index) in this.computeBrandArray" :key="index" :checkbox-name-prop="checkboxitem.merk"
                     :check-id-prop="index" :checkbox-value-prop="checkboxitem.merk" @emit-checkbox-value="emitCheckboxValue">
                     </filtercheckbox-comp >
@@ -632,11 +649,11 @@ export default {
                     <div class="form-group" ref="inputElementRef">  
                         <div class="form-group">
                             <!-- v-model binds the valueProp from the child comp with the Data object from the parent comp-->
-                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1" :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
+                            <form-field-comp  v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1" :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
                             </form-field-comp> 
                         </div> 
                         <div class="form-group">
-                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuigkentekenData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='1'  :input-field-name-prop="inputfieldsObjRef.inputfield2" :input-field-placeholder-prop="inputfieldsObjRef.inputfield2">         
+                            <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuigkentekenData" :aria-describedby-prop="inputfieldsObjRef.inputfield2"  :input-field-id-prop='1'  :input-field-name-prop="inputfieldsObjRef.inputfield2" :input-field-placeholder-prop="inputfieldsObjRef.inputfield2">         
                             </form-field-comp> 
                         </div>
                         <div class="form-group">
@@ -648,22 +665,6 @@ export default {
                             </form-field-comp> 
                         </div>
                     </div>
-                        <!-- <form-field-comp @input-field-value-prop-emit="emitFieldVal" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
-                        </form-field-comp> -->
-                        <!-- <form-field-comp  v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
-                        </form-field-comp> -->
-                        <!-- works with $emit(update:.. & v-model on parent-->
-                        <!-- <form-field-comp v-model:inputFieldValueProp="this.formfieldsReactive.custvoertuignameData" :aria-describedby-prop="inputfieldsObjRef.inputfield1"  :input-field-id-prop='0'  :input-field-name-prop="inputfieldsObjRef.inputfield1" :input-field-placeholder-prop="inputfieldsObjRef.inputfield1">         
-                        </form-field-comp> -->
-                    
-                    <!-- <div class="form-group">
-                        <form-field-comp :input-field-id-prop='3' :input-field-name-prop="inputfieldsObjRef.inputfield3" :input-field-placeholder-prop="inputfieldsObjRef.inputfield3" >         
-                        </form-field-comp>
-                    </div>
-                    <div class="form-group">
-                        <form-field-comp :input-field-id-prop='4' :input-field-name-prop="inputfieldsObjRef.inputfield4" :input-field-placeholder-prop="inputfieldsObjRef.inputfield4">         
-                        </form-field-comp>
-                    </div> -->
                 <button type="submit" class="btn btn-primary my-3" >Submit custom car</button>
             </form>
         </section>
@@ -674,10 +675,12 @@ export default {
                 </pagination-comp>
             </ul>
             <div class="resultsTotal">
-              Total results:  {{ this.customBrandArrayRef.length }} 
+            Totaal aantal custom voertuigen:  {{ this.voertuigStore.customBrandVoertuiglist.length }} 
+              
             </div>
             <div class="results"> 
-                <mark>Added custom voertuigen : <pre> {{ this.customBrandArrayRef }}</pre></mark>
+                <!-- <mark>Added custom voertuigen : <pre> {{ this.customBrandArrayRef }}</pre></mark> -->
+                <mark>Added custom voertuigen : <pre>{{this.voertuigStore.customBrandVoertuiglist}}</pre></mark>
                 <custom-voertuig-comp v-for="(voertuig, index) in this.computeCustomitems"
                     :key="index" :index-prop="index"
                     :cust-voertuig-id-prop="index" 
@@ -689,50 +692,60 @@ export default {
                     @emit-remove-cust-car="onEmitRemoveCustCar">
                 </custom-voertuig-comp>
             </div>
-            <div class="resultsTotal">
-              Total results:  {{ computeResults }} 
+            <div class="resultsTotal" v-if="this.voertuigStore.selectedBrandVoertuiglist.length > 0" >
+                {{ this.voertuigStore.selectedBrandVoertuiglist.length }} results van Totaal  {{ computeResults }}  default voertuigen.
             </div>
-            <div class="results filterResultstrue searchresultsfalse" v-if="filterResults == true && this.searchText == null">
-                <mark>filtered on : {{ filterSelect }} - filterResults: {{ filterResults }}</mark>
+            <div class="resultsTotal" v-else>
+                 Totaal  {{ computeResults }}  default voertuigen.
+            </div>
+            <div class="results filterResultstrue searchresultsfalse" v-if="this.filterResults==true && this.searchText==null && filtercheckbox==false">
+                <mark>Sort results ONLY on : {{ filterSelect }} - filterResults: {{ filterResults }}</mark>
                 <voertuig-comp v-for="(voertuig, index) in this.sortVoertuigenMerk.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="voertuig.id" :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
                     :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
-
             </div>
-            <div class="results filterResultstrue searchresultstrue" v-if="filterResults == true && searchText!=null">
-                <mark>filtered on : {{ filterSelect }} - filterResults: {{ filterResults }}</mark>
-                <voertuig-comp v-for="(voertuig, index) in this.searchVoertuigen.slice(this.setPages, this.setEndRange())"
+            <div class="results filterResultstrue searchresultstrue" v-if="this.filterResults==true && this.searchText!=null && this.filtercheckbox==false">
+                <mark>Search+sort results ONLY : {{ filterSelect }} - filterResults: {{ filterResults }}</mark>
+                <voertuig-comp v-for="(voertuig, index) in this.searchSortVoertuigen.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="voertuig.id" :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
                     :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
             </div>
-            <div class="results filterResultsfalse searchresultstrue filtercheckboxfalse" v-if="filterResults == false && searchText!=null && filtercheckbox==false">
-                <mark>default results- filterResults: {{ filterResults }}</mark>
-                <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.inputfieldsObjRef.slice(this.setPages, this.setEndRange())"
+            <div class="results filterResultstrue searchresultstrue" v-if="this.filterResults==false && this.searchText!=null && this.filtercheckbox==true">
+                <mark>Search+check results ONLY : {{ filterSelect }} - filterResults: {{ filterResults }}</mark>
+                <voertuig-comp v-for="(voertuig, index) in this.searchSortVoertuigen.slice(this.setPages, this.setEndRange())"
+                    :key="index" :index-prop="index" :voertuig-id-prop="voertuig.id" :voertuig-name-prop="voertuig.merk"
+                    :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
+                    :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
+                    @emit-update-user-history="emitUpdateUserHistory">
+                </voertuig-comp>
+            </div>
+            <div class="results filterResultstrue searchresultstrue" v-if="this.filterResults==true && this.searchText==null && this.filtercheckbox==true">
+                <mark>Sort+Check results ONLY : {{ filterSelect }} - filterResults: {{ filterResults }}</mark>
+                <voertuig-comp v-for="(voertuig, index) in this.updateSelectedBrands.slice(this.setPages, this.setEndRange())"
+                    :key="index" :index-prop="index" :voertuig-id-prop="voertuig.id" :voertuig-name-prop="voertuig.merk"
+                    :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
+                    :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
+                    @emit-update-user-history="emitUpdateUserHistory">
+                </voertuig-comp>
+            </div>
+            <div class="results filterResultsfalse searchresultstrue filtercheckboxfalse" v-if="this.filterResults==false && this.searchText!=null && this.filtercheckbox==false">
+                <mark>Search results ONLY - filterResults: {{ filterResults }} filtercheckbox{{ filtercheckbox  }}</mark>
+                <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.searchVoertuigen.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
                     :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
             </div>
-
-            <!-- <div class="results filterResultsfalse searchresultsfalse filtercheckboxtrue" v-if="filterResults == false && searchText==null && filtercheckbox==true">
-                <mark>default results- filterResults: {{ filterResults }} with checkbox</mark>
-                <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.checkboxSelectedMerk.slice(this.setPages, this.setEndRange())"
-                    :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
-                    :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
-                    :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
-                    @emit-update-user-history="emitUpdateUserHistory">
-                </voertuig-comp>
-            </div> -->
-            <div class="results filterResultsfalse searchresultsfalse filtercheckboxtrue" v-if="filterResults == false && searchText==null && filtercheckbox==true">
-                <mark>default results- filterResults: {{ filterResults }} with checkbox</mark>
-                <!-- //checkBoxSelectedArray -->
+            <div class="results filterResultsfalse searchresultsfalse filtercheckboxtrue" v-if="this.filterResults==false && this.searchText==null && this.filtercheckbox==true">
+                <mark>Checkbox results ONLY - filterResults: {{ filterResults }} with checkbox {{ filtercheckbox }}</mark>
+                <mark><pre>{{checkBoxSelectedArray}}</pre></mark>
                 <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.updateSelectedBrands.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
@@ -741,14 +754,17 @@ export default {
                 </voertuig-comp>
             </div>
             
-            <div class="results filterResultsfalse searchresultsfalse filtercheckboxfalse" v-if="filterResults == false && searchText==null && filtercheckbox==false">
-                <mark>default results- filterResults: {{ filterResults }}</mark>
+            <div class="results filterResultsfalse searchresultsfalse filtercheckboxfalse" v-if="this.filterResults==false && this.searchText==null && this.filtercheckbox==false">
+                <mark>default results no filter used</mark>
                 <voertuig-comp ref="userhistory" v-for="(voertuig, index) in this.voertuigStore.getChangedReactiveVoertuiglist.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
                     :voertuig-handelsbenaming-prop="voertuig.handelsbenaming"
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
+            </div>
+            <div class="results filterResultsfalse searchresultsfalse filtercheckboxfalse" v-if="this.filterResults==true && this.searchText!=null && this.filtercheckbox==true">
+                <mark>No selection possible - checkbox {{ filtercheckbox }}</mark>
             </div>
             <!-- use a "child" <router-view> in the parent page 
                 //when using children routes. SEE children routes in router.js
