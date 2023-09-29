@@ -3,7 +3,8 @@ import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import { useUrlTrack } from '../composables/composeUrlTrack';
+import { useComposableUrlTrack } from '../composables/composeUseUrlTrack';
+//import { useComposableUrlTrack } from '../composables/composeUseUrlTrack';
 import router from '../router/index';
 
 
@@ -13,10 +14,13 @@ export default {
   setup() {
      const voertuigStore = useVoertuigStore(); 
      const route = useRoute(); 
+     //destructure composable
+     const { urlTrackReactive , updateUrlTracking, getFilterUrlParams, setCustomParams, setUrl } = useComposableUrlTrack();
+
      const url = new URL("https://example.com?foo=1&bar=2");
      const params = new URLSearchParams(url.search);
      const urltrack = ref('');
-     const composeUrlTrack = useUrlTrack();
+    // const useComposUrlTrack = useComposableUrlTrack()
 
 // Add a third parameter.
 params.set("baz", 3);
@@ -25,15 +29,22 @@ params.toString(); // "foo=1&bar=2&baz=3"
 //METHODS
 const goBack = () => {
             console.log("goback");
-            router.go(-1)
+            //router.go(-1)
+            history.back();
         }
       return {
         voertuigStore,
         route,
+        
+        urlTrackReactive,
+        updateUrlTracking,
+        getFilterUrlParams,
+        setCustomParams,
+        setUrl,
+        
         params,
         url,
-        urltrack,
-        composeUrlTrack,
+        //useComposUrlTrack,
         goBack
         }
     },
@@ -75,7 +86,7 @@ const goBack = () => {
     computed:{
       computeUrlTrack(){
        //return this.urltrack = ref('');
-       return this.composeUrlTrack.length;
+       //return this.composeUrlTrack.length;
       }
     },
     watch: {
@@ -92,6 +103,10 @@ const goBack = () => {
     created() {
     //console.log("create() lifecycle");
     this.voertuigStore.fetchVoertuigen();
+    },
+    mounted() {
+    //return url
+    this.setUrl()
     }
 }
 </script>
@@ -125,7 +140,7 @@ const goBack = () => {
                       {{ key }}: {{ value }}
               </li>
             </ul>
-          <h2>show from history by kenteken as id {{ voertuigStore.getVoertuigByKenteken.length }}</h2>
+          <h2>show from history by kenteken as id {{ voertuigStore.getVoertuigByKenteken }}</h2>
               show param: {{route.params.voertuigidparam}}
             <ul>
               <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken[route.params.voertuigidparam]">

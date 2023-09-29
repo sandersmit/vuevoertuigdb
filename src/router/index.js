@@ -36,6 +36,7 @@ const router = createRouter({
             //router by default loads no props
             //set 'props' to true to pass props 
             //into component: Voertuigpage (passed by the router) 
+            //name:'Voertuigenpage',
             props: true,
             component: VoertuigPage,
             // children: [

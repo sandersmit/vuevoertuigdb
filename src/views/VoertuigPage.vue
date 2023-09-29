@@ -5,7 +5,7 @@ import PaginationComp from '../components/PaginationComp.vue';
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
 import { reactive, onMounted, ref} from "vue";
-import { useUrlTrack } from '../composables/composeUrlTrack';
+import { useComposableUrlTrack } from '../composables/composeUseUrlTrack';
 
 export default {
     //Setup option is happening before every option - used in option & composition API
@@ -13,7 +13,8 @@ export default {
     setup() {
         const voertuigStore = useVoertuigStore();
         const route = useRoute();
-        const composeUrlTrack = useUrlTrack();
+        //destructure composable
+        const { urlTrackReactive , updateUrlTracking, getFilterUrlParams, setCustomParams, setUrl } = useComposableUrlTrack();
         const brandArrayRef = ref([])
         const customBrandArrayRef = ref([{custvoertuignameData:'CUSTOM OPEL',custvoertuigkentekenData:'00-00-00',custvoertuighandelsnaamData:'OPTIMUS', custvoertuigsoortData:'PERSONENAUTO'},{custvoertuignameData:'CUSTOM FORD',custvoertuigkentekenData:'11-11-11',custvoertuighandelsnaamData:'PRIME', custvoertuigsoortData:'PERSONENAUTO'}])
         const inputfieldsObjRef = ref({inputfield1:"merknaam", inputfield2:"kenteken", inputfield3:"handelsbenaming", inputfield4:"type" })
@@ -37,7 +38,13 @@ export default {
             voertuigStore,
             route,
             userhistory,
-            composeUrlTrack,
+            
+            urlTrackReactive,
+            updateUrlTracking,
+            getFilterUrlParams,
+            setCustomParams,
+            setUrl,
+
             totalResults,
             brandArrayRef,
             customBrandArrayRef,
@@ -66,7 +73,7 @@ export default {
             totalnavsPagination: 10,
             vbindingtest: null,
             searchText: null,
-            filterSelect: '',
+            filterSelect: "",
             //reactiveDataSet
             selectedArgument:false,
             selectedName:'',
@@ -109,65 +116,27 @@ export default {
             this.formfieldsReactive.custvoertuighandelsnaamData = "";
             this.formfieldsReactive.custvoertuigsoortData = "";
         },
-        setCustomParams(){
-           
-            let baseUrl = `http://localhost:5184/#/voertuigenpage?`;
-
-            const getmyparams = new URLSearchParams( baseUrl.search);
-            //let filternameparam = getmyparams.get("filtername");
-            //getmyparams.delete('filtername', `merk`);
-            //getmyparams.append('filtername', `merk`);
-            const appendparam = function(){
-               console.log("this.filterSelect"+this.filterSelect)
-               getmyparams.append('filtername', `${this.filterSelect}`)
-            }
-            this.filterSelect?appendparam:false;
-            //console.log('has params?:'+ getmyparams.has("filtername"));
-            
-            //console.log(filternameparam)
-           // const currentUrl = location.href;
-                // const url = new URL(currentUrl);
-                
-            // if (getmyparams.has("filtername")) {
-            //     console.log('replace params:'+ getmyparams.has("filtername"));
-            //     getmyparams.set("filtername", `${this.filterSelect}`)
-            window.location.replace(`${baseUrl}${getmyparams}`);
-            
-            //      //console.log('show current url '+ currentUrl);
-            // } 
-            // if (!getmyparams.has("filtername")) {
-            //     console.log('add new params:'+ getmyparams.has("filtername"));
-            //     getmyparams.append('filtername', `${this.filterSelect}`)
-                
-            //     window.location.replace(`/voertuigenpage?${getmyparams}`);
-            //      //console.log('show current url '+ currentUrl);
-            // } 
-            // getmyparams.has("filtername") ? getmyparams.set("filtername", `${this.filterSelect}`):getmyparams.append('filtername', `${this.filterSelect}`);
-            return  getmyparams.has("filtername")
-           
-        },
+        
         checkstores() {
             console.log("checkstoress");
             //console.log(this.voertuigStore.getChangedReactiveVoertuiglist)
             console.log(this.voertuigStore.updateCustomBrandLists)
         },
-        outputFilter($event) {
+        outputFilter(event) {
             //landen op pagina, met de juiste sortering, lezen uit de url params
             //sortering initieren vanuit de params. 
             //active state setten in paginations menu
-            this.filterSelect = $event.target.value;
+            this.filterSelect = event.target.value;
+            this.filterSelect?true:false
+            
             if (this.filterSelect != "") {
                 this.filterResults = true;  
-                console.log("this.filterSelect"+this.filterSelect);
-                console.log("this.filterResults"+this.filterResults);
+                //this.setCustomParams(this.filterSelect)
+                this.setUrl(this.filterSelect)
             }
             if (this.filterSelect == "") {
                 this.filterResults = false;  
-                console.log("this.filterSelect"+this.filterSelect);
-                console.log("this.filterResults"+this.filterResults);
             }
-            
-            //console.log($event.target.value);
             //set filterResults 
             //filterparams = ?filterResults=true;
             //route.push('/newurl')
@@ -180,15 +149,16 @@ export default {
             //  console.log(this.newrangeArray);
             this.setStartRange();
             
-            // this.setCustomParams()?this.filterResults=true:this.filterResults = false;
+            //if setCustomParams == true , set this.filterResults to TRUE else to FALSE
+            setCustomParams?this.filterResults=true:this.filterResults = false;
            
             //check if filter value is used in url params and current selection state
-            if((this.setCustomParams()) || (this.filterSelect != "")){
-                console.log('setCustomParams is:'+ this.setCustomParams())
+            if((setCustomParams) || (this.filterSelect != "")){
+                console.log('setCustomParams is:'+ setCustomParams)
                 this.filterResults = true;
                 this.setStartRange();
             }else{
-                console.log('setCustomParams is:'+ this.setCustomParams())
+                console.log('setCustomParams is:'+ setCustomParams)
                 this.filterResults = false;
             }
             
@@ -224,15 +194,11 @@ export default {
         },
         emitUpdateUserHistory: function (argument) {
           //  console.log(argument);
-            
-            this.voertuigStore.getHistoryList.push(argument);
-            
+            this.voertuigStore.getHistoryList.push(argument);       
             this.userhistory = true;
             //console.log(this.userhistory);
-
         },
         onEmitRemoveCustCar:function(payload){
-       
             // this.customBrandArrayRef.filter((deleteItem, index)=>{
             //     if(index == payload){
             //         //this.brandArrayRef.push(argument);
@@ -283,32 +249,7 @@ export default {
             });
             console.log("collectbrands()");
              console.log(this.brandArrayRef.length);
-        },
-        keepSelected(){
-             //reset ref
-             
-            //  let updatebrandsArr = [];
-            // updatebrandsArr = this.voertuigStore.getVoertuigByBrand.filter((knownItem, index)=>{
-            //     if(knownItem){
-            //         console.log('knownItem.merk')
-            //        
-            //         // updatebrandsArr.push(knownItem.merk).value;
-            //     }
-            // });
-            // return updatebrandsArr;
-        //    console.log(this.voertuigStore.getVoertuigByBrand('OPEL') )
-          
-           // let updatebrandsArr = [];
-            // this.merkFiltersSelected.forEach(keepbrand);
-            //         function keepbrand(keepitem, index){
-            //             //merkFiltersSelected.length
-            //             console.log(keepitem)
-            //             //Passing arguments to getters
-            //             this.voertuigStore.getVoertuigByBrand("FORD");
-            //         }
-          //   return updatebrandsArr;
-           
-        },
+        }
         
     },
     //COMPUTED: 
@@ -468,6 +409,7 @@ export default {
                 
             return this.voertuigStore.getVoertuigByBrand(storeUpdateParams);
         }
+        
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 
@@ -505,13 +447,9 @@ export default {
             }
         },
         filterSelect(value) {
-            //if (value == 'merk') {
+            if (value) {
                 console.log('watch change filter value to: ' + value)
-                // this.outputFilter(value)
-                //this.setCustomParams()
-                console.log('watch this.setCustomParams():' + this.setCustomParams());
-                //console.log("filterSelect() lifecycle Voertuig page" +  document.querySelector(".item"));
-           // }
+           }
         },
         searchText(value){
             console.log('watch searchText: ' + value)
@@ -532,8 +470,13 @@ export default {
     //   console.log("onMounted() lifecycle Voertuig page"+  document.querySelector(".item"));
     //   console.log("onMounted()"+  document.querySelector(".container"));
     //   document.addEventListener('DOMContentLoaded', function () {
-    //     // INSERT CODE HERE
-    //     console.log("DOMContentLoaded"+  document.querySelector(".item"));
+    // INSERT CODE HERE
+   
+    //return url
+    this.setUrl()
+    
+    
+    // console.log("DOMContentLoaded"+  document.querySelector(".item"));
     // });
       //const paginationComp = document.getElementsByClassName("paginationComp")
     //   const paginationCompItem = document.querySelector(".item");
@@ -567,10 +510,11 @@ export default {
     </div>
     <div class="row">
         <aside class="col-sm-12 col-md-3">
-            <a href="voertuigenpage#/voertuigenpage"  @click.prevent="composeUrlTrack.updateUrlTrack(),checkstores()" class="btn btn-outline-secondary">show composable last url</a>
+            <a href="voertuigenpage#/voertuigenpage"  @click.prevent="updateUrlTracking(this.filterSelect)" class="btn btn-outline-secondary">show composable last url</a>
           <ul>
-            <!-- <li>composeUrlTrack:{{ composeUrlTrack }}</li>
-            <li>computeUrlTrack: {{ this.computeUrlTrack  }}</li> -->
+            <li>useComposUrlTrack: {{ urlTrackReactive.param1 }}</li>
+            <!-- <li>updateUrlTrack param:{{ useComposUrlTrack.updateUrlTrack() }}</li> -->
+            <!-- <li>computeUrlTrack: {{ useComposUrlTrack.urlTrackReactive.param1 }}</li> -->
           </ul>  
             <h3>show history</h3>
             <ul class="history" v-if="this.voertuigStore.getHistoryList.length > 0" v-for="(historyItem, index) in this.voertuigStore.getHistoryList"  :key="index" >
@@ -588,7 +532,7 @@ export default {
             <article>
                 <ul class="huddata">
                     <li>
-                        <button @click="keepSelected()" class="btn">show params</button>
+                        <button @click="checkstores()" class="btn">show stores</button>
                     </li>
                     <li>
                         paginationNavs: {{ this.makeNavPagination().length }}

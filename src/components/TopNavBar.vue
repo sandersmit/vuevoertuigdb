@@ -38,8 +38,8 @@ export default{
       togleClassname:function($event){  
           // this.isActive = !this.isActive;
 
-          console.log(`toggle ${this.isActive}`);
-          console.log(`event target ${$event.target.className}`);
+         // console.log(`toggle ${this.isActive}`);
+        //  console.log(`event target ${$event.target.className}`);
           //$event.target.classList.add("active");
          },
       

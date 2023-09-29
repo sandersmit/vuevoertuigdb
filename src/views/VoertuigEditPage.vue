@@ -5,11 +5,10 @@ import { reactive,computed,defineProps,ref } from "vue";
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { storeToRefs } from "pinia"; 
 
-
-import { useUrlTrack } from '../composables/composeUrlTrack';
 import FormFieldComp from '../components/forms/FormFieldComp.vue';
 import router from '../router/index';
 
+//import { useComposableUrlTrack} from '../composables/composeUseUrlTrack';
 
 
 ////using composition api with setup() as am option from the option API
@@ -22,7 +21,7 @@ const url = new URL("https://example.com?foo=1&bar=2");
 const params = new URLSearchParams(url.search);
 const urltrack = ref('');
 const kentekenRef = ref('');
-const composeUrlTrack = useUrlTrack();
+//const useComposUrlTrack = useComposableUrlTrack();
 const formfieldsReactive = reactive({
       custvoertuignameData: "",
       custvoertuigkentekenData: "",
