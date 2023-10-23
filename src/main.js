@@ -9,7 +9,7 @@ import router from './router';
 //pinia instance for data
 import { createPinia } from 'pinia'
 
-//import custom components
+//import and 'define' custom components
 
 import FilterCheckboxComp from './components/forms/FilterCheckboxComp.vue'
 import FormFieldComp from './components/forms/FormFieldComp.vue' 
@@ -33,8 +33,8 @@ const AppNameConst = createApp(AppName);
 const pinia = createPinia()
 
 //using the custom component method
-// 1 name as string: VriendContact -> reference to the data() object  
-//use it as <vriend-contact></vriend-contact> in main App.vue
+// 1 name as string: VoertuigDetailComp -> reference to the data() object  
+//use it as <voertuig-detail-comp></voertuig-detail-comp> in main App.vue
 // 2 component object/instance name, defined on the import..above
 
 

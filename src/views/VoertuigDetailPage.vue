@@ -102,7 +102,7 @@ const goBack = () => {
     },
     created() {
     //console.log("create() lifecycle");
-    this.voertuigStore.fetchVoertuigen();
+    //this.voertuigStore.fetchVoertuigen();
     },
     mounted() {
     //return url

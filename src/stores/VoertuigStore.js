@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 //import { onMounted } from "vue";
 
-//as the name of the file 'bookStore'
+//as the name of the file 'VoertuigStore.js'
 export const useVoertuigStore = defineStore('VoertuigStore', {
   //The state is defined as a function returning the initial state
     state: function () {
@@ -153,16 +153,16 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
           return state.brandVoertuiglist
       },
       updateCustomBrandLists:function(state){
-        
         return state.customBrandVoertuiglist;
       }
     },
     //Actions are functions that can also be asynchronous which are used to update the state
     actions:{
         async fetchVoertuigen(){
+          console.log("fetching..")
             const response = await fetch('https://opendata.rdw.nl/resource/m9d7-ebf2.json?voertuigsoort=Personenauto'
             ).then(function (response) {
-               // console.log(response)
+               console.log(response)
                 return response.json();            
             });
             this.reactiveVoertuiglist = response;
