@@ -29,7 +29,7 @@ params.toString(); // "foo=1&bar=2&baz=3"
 //METHODS
 const goBack = () => {
             console.log("goback");
-            //router.go(-1)
+            router.go(-1)
             history.back();
         }
       return {
