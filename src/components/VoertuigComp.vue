@@ -6,7 +6,7 @@
             <router-link   :to="`/voertuigdetailpage/${voertuigIdProp}`" @click="updateUserHistory()">
                 id: {{ voertuigIdProp}} - index: {{ indexProp}} merk: {{voertuigNameProp}} handbena:{{voertuigHandelsbenamingProp}} kenteken: {{ voertuigKentekenProp }}</router-link>
         </div>
-</template>
+</template>Detail
 <script>
 
 export default{
