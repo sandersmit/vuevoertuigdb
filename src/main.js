@@ -1,5 +1,12 @@
 //import 'createApp' method from a vue library 'package'
 import { createApp } from 'vue';
+
+
+// Option A: Include Complete Bootstrap
+import "../node_modules/bootstrap/scss/bootstrap.scss"
+//custom
+import './scss/bootstrap/styles.scss'
+
 //import from the 'default' object from the 'general' App.vue file - a vue file
 import AppName  from './App.vue';
 

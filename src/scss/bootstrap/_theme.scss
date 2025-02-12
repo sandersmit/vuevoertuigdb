@@ -1,0 +1,40 @@
+body{
+    background-color: $gray-dark-4;
+   #app{
+    background-color: $gray-dark-4;
+   }
+        article{
+            background-color: $gray-dark-5;
+        }
+        section{
+            background-color: $gray-dark-5;
+        }
+        h1,h2,h3,h4
+        {
+            color:$gray-light-4;
+        }
+        h1{
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+      
+        a{
+            color:$green-lighter;
+                &.nav-link{
+                    color:$gray-light-4;
+                }
+        }
+        ul{
+            li{
+                    color: red; 
+        }
+        .huddata{
+            color:$gray-light-1;
+            
+        }
+        .voertuigcomp{
+            background-color: $gray-dark-5;
+          
+        }
+    }  
+}

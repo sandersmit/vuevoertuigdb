@@ -3,17 +3,20 @@
 //@import "~bootstrap/scss/bootstrap-grid";
 //@import "~bootstrap/scss/bootstrap-utilities";
 
-
-@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+// Option A: Include Complete Bootstrap
+//@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
 
 
 // Custom.scss
 // Option B: Include parts of Bootstrap
-
-// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+//////////////// Configuration
+// // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
 // @import "../../../node_modules/bootstrap/scss/functions";
 
-// // 2. Include any default variable overrides here
+// // 2. Include any default variable overrides here 
+// // copieing vars from _variables.scss - & -removing "!default" for using - in:
+// // custom_variables.scss 'custom defaults'
+@import "./variables_custom";
 
 // // 3. Include remainder of required Bootstrap stylesheets
 // @import "../../../node_modules/bootstrap/scss/variables";
@@ -24,71 +27,34 @@
 // // 5. Include remainder of required parts
 // @import "../../../node_modules/bootstrap/scss/maps";
 // @import "../../../node_modules/bootstrap/scss/mixins";
-// @import "../../../node_modules/bootstrap/scss/root";
 
-// // 6. Optionally include any other parts as needed
+// // // 6. Optionally include any other parts as needed
 // @import "../../../node_modules/bootstrap/scss/utilities";
+// @import "../../../node_modules/bootstrap/scss/root";
 // @import "../../../node_modules/bootstrap/scss/reboot";
-// // @import "../../../node_modules/bootstrap/scss/type";
-// //@import "../../../node_modules/bootstrap/scss/images";
+// @import "../../../node_modules/bootstrap/scss/type";
+// ////////////////////Layout & components
+// @import "../../../node_modules/bootstrap/scss/images";
 // @import "../../../node_modules/bootstrap/scss/containers";
 // @import "../../../node_modules/bootstrap/scss/grid";
-// // @import "../../../node_modules/bootstrap/scss/helpers";
+// @import "../../../node_modules/bootstrap/scss/forms";
+// @import "../../../node_modules/bootstrap/scss/buttons";
+// @import "../../../node_modules/bootstrap/scss/nav";
+
+// // Helpers
+// @import "../../../node_modules/bootstrap/scss/helpers";
+
 
 // // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
-// @import "../../../node_modules/bootstrap/scss/utilities/api";
+// //@import "../../../node_modules/bootstrap/scss/utilities/api";
 
-// 8. Add additional custom code here
+//8. Add additional custom code here
+@import "./theme";
 
-//Import our custom SCSS
-//colors
-$gray-light-1: #aeaeae;
-$gray-light-2: #c7c7c7;
-$gray-light-3: #d1d1d1;
-$gray-light-4: #e5e5e5;
-$gray-light-5: #f2f2f2;
-$gray-dark-1: #636363;
-$gray-dark-2: #484848;
-$gray-dark-3: #3a3a3a;
-$gray-dark-4: #282828;
-$gray-dark-5: #202020;
-$green: #42b883;
-$green-light: #42d392;
-$green-lighter: #35eb9a;
-$green-dark: #33a06f;
-$green-darker: #155f3e;
-
+//custom styles for testing
 body{
-    background-color: $gray-dark-4;
-    //background-color: red;
-        article{
-            background-color: $gray-dark-5;
-        }
-        section{
-            background-color: $gray-dark-5;
-        }
-        h1,h2,h3,h4
-        {
-            color:$gray-light-4;
-        }
-        h1{
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-      
-        a{
-            color:$green-lighter;
-                &.nav-link{
-                    color:$gray-light-4;
-                }
-        }
-        .huddata{
-            color:$gray-light-1;
-            
-        }
-        .voertuigcomp{
-            background-color: $gray-dark-4;
-          
-        }
-        
+   background-color: $gray-dark-4;
 }
+
+
+
