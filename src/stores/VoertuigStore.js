@@ -20,6 +20,9 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
           filteredlist:[
 
           ],
+          sortedlist:[
+
+          ],
           brandVoertuiglist:[
 
           ],
@@ -43,14 +46,47 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
         return state.reactiveVoertuiglist.length != 0 ? true : false
        },
       getVoertuigen:function(state){
-      return state.reactiveVoertuiglist 
+      return this.getLoader ? state.reactiveVoertuiglist : state.reactiveVoertuiglist  
       },
-      getVoertuigList:function(state){
-        return state.changedReactiveVoertuiglist.length != 0 ? state.changedReactiveVoertuiglist : []
-       },
+      getSorting:function(state){
+        return function(arg){
+          console.log(arg)
+          let array = [];
+          let nameA
+          let nameB
+          array = this.getVoertuigen
+          state.sortedlist.push(array);
+          console.log(array)
+          
+            return  state.sortedlist.flat().sort((a, b) => {
+              if(arg=='handelsbenaming'){
+                nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+                nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+              }
+              if (arg=='merk') {
+                 nameA = a.merk.toUpperCase(); // ignore upper and lowercase
+                 nameB = b.merk.toUpperCase(); // ignore upper and lowercase
+              }
+              if (arg=='kenteken') {
+                nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
+                nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
+             }
+              
+              if (nameA < nameB) {
+                return -1;
+              }
+              if (nameA > nameB) {
+                return 1;
+                }  
+              })             
+        }       
+      },
+      // getVoertuigList:function(state){
+      //   return state.changedReactiveVoertuiglist.length != 0 ? state.changedReactiveVoertuiglist : []
+      //  },
       // getChangedReactiveVoertuiglist:function(state){
       //   state.changedReactiveVoertuiglist.length = 0;
-      //   //console.log("state.changedReactiveVoertuiglist: "+ state.changedReactiveVoertuiglist)
+      //   console.log("state.changedReactiveVoertuiglist: " + state.changedReactiveVoertuiglist)
       //   this.reactiveVoertuiglist.forEach(addIndex);
       //               function addIndex(item, index){
       //                 state.changedReactiveVoertuiglist.push({
@@ -73,54 +109,72 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       // //   });
       // // },
       // //Passing arguments to getters
-      // getVoertuigByKenteken:function (state) {
-      //   return function (argument) {
-      //     return state.reactiveVoertuiglist.find(function (item) {
-      //       console.log(argument)
-      //       return item.kenteken === argument;
-      //     });
-      //   };
-      //  // return state.selectedBrandVoertuiglist;
-      // },
+      getVoertuigByKenteken:function (state) {
+        return function (argument) {
+          return state.reactiveVoertuiglist.find(function (item) {
+            console.log(argument)
+            return item.kenteken === argument;
+          });
+        };
+       // return state.selectedBrandVoertuiglist;
+      },
       // //reset voertuiglist to 0
-      // resetselectedBrandVoertuiglist:function (state) { 
-      //   state.selectedBrandVoertuiglist.length = 0;
-      //   console.log(state.selectedBrandVoertuiglist.length)
-      // },
-      // //UPDATE: PUSH array state. Passing arguments to getters
-      // _getVoertuigByBrand: function (state) {
-      //   return function (newStoreUpdateParams) {
-      //     if (newStoreUpdateParams.valueSelected) {
-      //       console.log("Value is true: " + newStoreUpdateParams.valueSelected + state.reactiveVoertuiglist.length);
-      //       state.reactiveVoertuiglist.forEach(function (item, index) {
-      //         // console.log("filter keepitem?: " + keepitem + item.id)
-      //         if (item.merk === newStoreUpdateParams.checkboxName) {
-      //           console.log("push?" + newStoreUpdateParams.checkboxName);
-      //           state.selectedBrandVoertuiglist.push({
-      //             'id': index,
-      //             'kenteken': item.kenteken,
-      //             'voertuigsoort': item.voertuigsoort,
-      //             'merk': item.merk,
-      //             'handelsbenaming': item.handelsbenaming,
-      //           });
-      //           console.log(state.selectedBrandVoertuiglist.length);
-      //           // console.log(state.selectedBrandVoertuiglist)
-      //         }
-      //         });
-      //       return state.selectedBrandVoertuiglist;
-      //     } else {
-      //       for (let i = 0; i < state.selectedBrandVoertuiglist.length; i++) {
-      //         console.log("use indexOf on item: " + state.selectedBrandVoertuiglist[i].merk);
-      //         if (state.selectedBrandVoertuiglist[i].merk === newStoreUpdateParams.checkboxName) {
-      //           state.selectedBrandVoertuiglist.splice(i, 1);
-      //           i--;
-      //         }
-      //       }
-      //       return state.selectedBrandVoertuiglist;
-      //     }
-
-      //   };
-      // },  
+      resetselectedBrandVoertuiglist:function (state) { 
+        state.selectedBrandVoertuiglist.length = 0;
+        console.log(state.selectedBrandVoertuiglist.length)
+      },
+      //UPDATE: PUSH array state. Passing arguments to getters
+      getVoertuigByBrand: function (state) {
+        return function (newStoreUpdateParams) {
+          //if (newStoreUpdateParams.valueSelected) {
+            console.log("Value is true: " + newStoreUpdateParams.valueSelected + state.reactiveVoertuiglist.length);
+            // state.reactiveVoertuiglist.forEach(function (item, index) {
+            //   // console.log("filter keepitem?: " + keepitem + item.id)
+            //   if (item.merk === newStoreUpdateParams.checkboxName) {
+            //     console.log("push?" + newStoreUpdateParams.checkboxName);
+            //     state.selectedBrandVoertuiglist.push({
+            //       'id': index,
+            //       'kenteken': item.kenteken,
+            //       'voertuigsoort': item.voertuigsoort,
+            //       'merk': item.merk,
+            //       'handelsbenaming': item.handelsbenaming,
+            //     });
+            //     console.log(state.selectedBrandVoertuiglist.length);
+            //     // console.log(state.selectedBrandVoertuiglist)
+            //   }
+            //   });
+            this.selectedBrandVoertuiglist.length = 0;
+            //   return state.selectedBrandVoertuiglist;
+            newStoreUpdateParams.totalSelected.forEach(function (item, index) {
+              console.log(item)
+              const found = state.reactiveVoertuiglist.filter((element) =>  element.merk == item);
+              state.selectedBrandVoertuiglist.push(found)
+            });
+            return this.selectedBrandVoertuiglist.flat();
+            //console.log(newStoreUpdateParams.checkboxName )
+            // return this.selectedBrandVoertuiglist = state.reactiveVoertuiglist.find(function (item) {
+            //     item.merk == newStoreUpdateParams.checkboxName;
+            //    });
+               
+        
+            //state.selectedBrandVoertuiglist =  state.reactiveVoertuiglist
+             //state.selectedBrandVoertuiglist.find((element) => element.merk == newStoreUpdateParams.checkboxName);
+           
+           // } else {
+            //for (let i = 0; i < state.selectedBrandVoertuiglist.length; i++) {
+             // console.log("use indexOf on item: " + state.selectedBrandVoertuiglist[i].merk);
+              // if (state.selectedBrandVoertuiglist[i].merk === newStoreUpdateParams.checkboxName) {
+              //   state.selectedBrandVoertuiglist.splice(i, 1);
+              //   i--;
+              // }
+             // }
+            //  const found = this.selectedBrandVoertuiglist.filter((element) =>  element.merk != newStoreUpdateParams.checkboxName);
+            //  this.selectedBrandVoertuiglist = found
+            //  return this.selectedBrandVoertuiglist.flat();
+           
+        //  }
+        };
+      },  
       // get getVoertuigByBrand() {
       //   return this._getVoertuigByBrand;
       // },
@@ -148,16 +202,30 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
 //         };   
 // },
       getAllBrands:function (state) {
-       //console.log("getAllBrands")
-       this.reactiveVoertuiglist.forEach(addbrand);
-              function addbrand(item, index){
-                  //    console.log("getAllBrands")
-                      state.brandVoertuiglist.push({
-                        'id':index,
-                        'merk': item.merk,
-                      });
-                    }
-          return state.brandVoertuiglist
+       console.log("getAllBrands")
+       //let arr = this.reactiveVoertuiglist;
+
+      // const array = this.reactiveVoertuiglist.filter((item, index) =>  item.merk !== index);
+      //arr = arr.filter((item, index) => arr.indexOf(item) === index);
+
+      let arr =  this.reactiveVoertuiglist.map((item) => item.merk);
+      let s = new Set(arr);
+      let a1 = [...s]
+      // this.reactiveVoertuiglist.forEach(addbrand);
+      //const array = this.reactiveVoertuiglist.filter((item, index) => this.reactiveVoertuiglist.indexOf(item) === index);
+      //  state.brandVoertuiglist = array
+              // function addbrand(item, index){
+              //   console.log("push brand")
+              //     //    console.log("getAllBrands")
+              //         state.brandVoertuiglist.push({
+              //           'id':index,
+              //           'merk': item.merk,
+              //         });
+              //       }
+              console.log(a1)
+              //state.brandVoertuiglist = array
+             return a1
+        
       },
       updateCustomBrandLists:function(state){
         return state.customBrandVoertuiglist;
@@ -167,7 +235,8 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
     actions:{
         async fetchVoertuigen(){
           console.log("fetching..")
-            const response = await fetch('https://opendata.rdw.nl/resource/m9d7-ebf2.json?voertuigsoort=Personenauto'
+            const response = await fetch('http://localhost:8080/api/opendataRdwPersonenauto'
+            //const response = await fetch('https://opendata.rdw.nl/resource/m9d7-ebf2.json?voertuigsoort=Personenauto'
             ).then(function (response) {
                console.log(response)
                 return response.json();            

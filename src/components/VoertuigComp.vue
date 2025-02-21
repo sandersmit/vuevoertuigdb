@@ -32,19 +32,19 @@ export default{
             },
             voertuigNameProp:{
                 type:String,
-                required: true
+                required: false
             },
             voertuigSoortProp:{
                 type:String,
-                required: true
+                required: false
             },
             voertuigKentekenProp:{
                 type:String,
-                required: true
+                required: false
             },
             voertuigHandelsbenamingProp:{
                 type:String,
-                required: true
+                required: false
             }
     },
     data() {

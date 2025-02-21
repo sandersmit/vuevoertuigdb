@@ -6,7 +6,7 @@
             <!-- <router-link   :to="`/voertuigdetailpage/${voertuigIdProp}`" @click="updateUserHistory()">
                 id: {{ voertuigIdProp}} - index: {{ indexProp}} merk: {{voertuigNameProp}} handbena:{{voertuigHandelsbenamingProp}} kenteken: {{ voertuigKentekenProp }}</router-link>
          -->
-         <label class="form-input-label">{{inputFieldNameProp}}</label>
+        <label class="form-input-label">{{inputFieldNameProp}}</label>
         <input type="text" 
         :id="`${inputFieldIdProp}`"
         class="form-control"
@@ -47,7 +47,7 @@ export default{
                 },
             inputFieldNameProp:{
                 type:String,
-                required: true
+                required: false
             },
             inputFieldPlaceholderProp:{
                 type:String,

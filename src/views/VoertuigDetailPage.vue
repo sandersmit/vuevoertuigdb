@@ -84,10 +84,10 @@ const goBack = () => {
       
     },
     computed:{
-      computeUrlTrack(){
+      //computeUrlTrack(){
        //return this.urltrack = ref('');
        //return this.composeUrlTrack.length;
-      }
+      //}
     },
     watch: {
         //value is the default parameter/argument that comes with a watch: propertie. 
@@ -140,13 +140,13 @@ const goBack = () => {
                       {{ key }}: {{ value }}
               </li>
             </ul>
-          <h2>show from history by kenteken as id {{ voertuigStore.getVoertuigByKenteken }}</h2>
+          <!-- <h2>show from history by kenteken as id {{ voertuigStore.getVoertuigByKenteken }}</h2>
               show param: {{route.params.voertuigidparam}}
             <ul>
               <li v-for="(value, key) in voertuigStore.getVoertuigByKenteken[route.params.voertuigidparam]">
                       {{ key }}: {{ value }}
               </li>
-            </ul> 
+            </ul>  -->
             <h2>show from custom items {{ voertuigStore.customBrandVoertuiglist.length }}</h2>
             <ul>
               <p v-if="loading">Loading posts...</p>

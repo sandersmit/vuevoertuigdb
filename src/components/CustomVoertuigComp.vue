@@ -34,19 +34,19 @@ props: {
         },
         custVoertuigNameProp:{
             type:String,
-            required: true
+            required: false
         },
         custVoertuigSoortProp:{
             type:String,
-            required: true
+            required: false
         },
         custVoertuigKentekenProp:{
             type:String,
-            required: true
+            required: false
         },
         custVoertuigHandelsbenamingProp:{
             type:String,
-            required: true
+            required: false
         }
 },
 data() {

@@ -1,21 +1,3 @@
-<template>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input"
-        :id="`${checkboxValueProp}`"
-        :class="checkIdProp==0 ?'active':''" 
-        :value="`${checkboxValueProp}`" 
-        :for="`${checkIdProp}`"
-        @click="checkboxValuePropEmit"
-        v-model="selected"
-        >                                 
-        <label :for="`${checkboxValueProp}`" class="form-check-label">{{checkboxNameProp}}</label>
-        
-    </div>
-    <!-- {{ this.togglecheckboxEl[0] }} -->
-    {{ this.selected }}
-    <!-- {{ this.returnChecked }} -->
-</template>
-
 <script>
 // import { useRoute } from 'vue-router';
 //import { onMounted } from "vue";
@@ -43,6 +25,10 @@ export default{
                 required: true
             },
             checkboxNameProp:{
+                type:String,
+                required: true
+            },
+            checkboxMerkProp:{
                 type:String,
                 required: true
             },
@@ -84,14 +70,11 @@ export default{
            // console.log("checkboxValuePropEmit:"+ this.checkboxNameProp)
            const emitCheckboxProps = {
             'thisSelected':this.selected,
-             'thisCheckboxName': this.checkboxNameProp
+             'thisCheckboxName': this.checkboxNameProp,
+             'thisCheckboxMerk': this.checkboxMerkProp
            }
-            if(this.selected){
-                this.$emit('emit-checkbox-value', emitCheckboxProps)
-            }else{
-                this.$emit('emit-checkbox-value', emitCheckboxProps)
-            }
-           
+           console.log("this.:"+ this.checkboxMerkProp)
+           this.$emit('emit-checkbox-value', emitCheckboxProps)
         },
         // deleteEventEmit:function(){  
         //     //LET OP!
@@ -130,7 +113,22 @@ export default{
     }
 }
 </script>
-
+<template>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input"
+        :id="`${checkboxValueProp}`"
+        :class="checkIdProp==0 ?'active':''" 
+        :value="`${checkboxValueProp}`" 
+        :for="`${checkIdProp}`"
+        @click="checkboxValuePropEmit"
+        v-model="selected"
+        >                                 
+        <label :for="`${checkboxValueProp}`" class="form-check-label">{{checkboxNameProp}}</label>
+    </div>
+    <!-- {{ this.togglecheckboxEl[0] }} -->
+    {{ this.selected }}
+    <!-- {{ this.returnChecked }} -->
+</template>
 <style scoped lang="scss">
 body{
     a{
