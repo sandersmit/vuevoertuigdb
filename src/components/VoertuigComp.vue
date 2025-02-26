@@ -23,7 +23,7 @@ export default{
         // 1 to make sure the type , string or number or boolean etc.. 
         // 2 to check if the prop is required
             voertuigIdProp:{
-                type:Number,
+                type:String,
                 required: true
             },
             indexProp:{
