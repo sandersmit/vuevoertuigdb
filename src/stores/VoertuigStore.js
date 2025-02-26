@@ -50,15 +50,16 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       },
       getSorting:function(state){
         return function(arg){
-          console.log(arg)
+          console.log('getSorting',arg)
           let array = [];
           let nameA
           let nameB
+          //initial list after fetch
           array = this.getVoertuigen
+          state.sortedlist.length = 0
           state.sortedlist.push(array);
-          console.log(array)
           
-            return  state.sortedlist.flat().sort((a, b) => {
+         return state.sortedlist.flat().sort((a, b) => {
               if(arg=='handelsbenaming'){
                 nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
                 nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
@@ -71,16 +72,19 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
                 nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
                 nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
              }
-              
               if (nameA < nameB) {
                 return -1;
               }
               if (nameA > nameB) {
                 return 1;
                 }  
-              })             
-        }       
+              }) 
+        }   
       },
+      getHistoryList:function(state){
+        return state.historylist;
+      },
+      
       // getVoertuigList:function(state){
       //   return state.changedReactiveVoertuiglist.length != 0 ? state.changedReactiveVoertuiglist : []
       //  },
@@ -99,9 +103,7 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       //           } 
       //         return state.changedReactiveVoertuiglist      
       // },
-      // getHistoryList:function(state){
-      //   return state.historylist;
-      // },
+      
       // // getFilteredList:function(state){
       // //   return state.filteredlist = state.reactiveVoertuiglist.map(function(item){
       // //     //return ({'merk':item.merk});
@@ -109,20 +111,20 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       // //   });
       // // },
       // //Passing arguments to getters
-      getVoertuigByKenteken:function (state) {
-        return function (argument) {
-          return state.reactiveVoertuiglist.find(function (item) {
-            console.log(argument)
-            return item.kenteken === argument;
-          });
-        };
-       // return state.selectedBrandVoertuiglist;
-      },
+      // getVoertuigByKenteken:function (state) {
+      //   return function (argument) {
+      //     return state.reactiveVoertuiglist.find(function (item) {
+      //       console.log(argument)
+      //       return item.kenteken === argument;
+      //     });
+      //   };
+      //  // return state.selectedBrandVoertuiglist;
+      // },
       // //reset voertuiglist to 0
-      resetselectedBrandVoertuiglist:function (state) { 
-        state.selectedBrandVoertuiglist.length = 0;
-        console.log(state.selectedBrandVoertuiglist.length)
-      },
+      // resetselectedBrandVoertuiglist:function (state) { 
+      //   state.selectedBrandVoertuiglist.length = 0;
+      //   console.log(state.selectedBrandVoertuiglist.length)
+      // },
       //UPDATE: PUSH array state. Passing arguments to getters
       getVoertuigByBrand: function (state) {
         return function (newStoreUpdateParams) {
@@ -150,6 +152,7 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
               const found = state.reactiveVoertuiglist.filter((element) =>  element.merk == item);
               state.selectedBrandVoertuiglist.push(found)
             });
+            console.log('??',this.selectedBrandVoertuiglist.flat())
             return this.selectedBrandVoertuiglist.flat();
             //console.log(newStoreUpdateParams.checkboxName )
             // return this.selectedBrandVoertuiglist = state.reactiveVoertuiglist.find(function (item) {

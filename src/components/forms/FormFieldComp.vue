@@ -49,6 +49,10 @@ export default{
                 type:String,
                 required: false
             },
+            inputFieldMerkProp:{
+                type:String,
+                required: false
+            },
             inputFieldPlaceholderProp:{
                 type:String,
                 required: true
@@ -74,6 +78,7 @@ export default{
     // 'emit-custom-event',
     // 'delete-event-emit'
     //'input-field-value-prop-emit',
+    'update:inputFieldValueProp'
     
     ],
     methods: {

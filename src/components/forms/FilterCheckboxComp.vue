@@ -126,7 +126,7 @@ export default{
         <label :for="`${checkboxValueProp}`" class="form-check-label">{{checkboxNameProp}}</label>
     </div>
     <!-- {{ this.togglecheckboxEl[0] }} -->
-    {{ this.selected }}
+    <!-- {{ this.selected }} -->
     <!-- {{ this.returnChecked }} -->
 </template>
 <style scoped lang="scss">

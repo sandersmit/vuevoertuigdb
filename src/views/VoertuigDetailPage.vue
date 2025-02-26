@@ -2,7 +2,7 @@
 import { useVoertuigStore } from '../stores/VoertuigStore';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useComposableUrlTrack } from '../composables/composeUseUrlTrack';
 //import { useComposableUrlTrack } from '../composables/composeUseUrlTrack';
 import router from '../router/index';
@@ -20,6 +20,7 @@ export default {
      const url = new URL("https://example.com?foo=1&bar=2");
      const params = new URLSearchParams(url.search);
      const urltrack = ref('');
+     const currentRouteRef = ref('')
     // const useComposUrlTrack = useComposableUrlTrack()
 
 // Add a third parameter.
@@ -27,15 +28,35 @@ params.set("baz", 3);
 params.toString(); // "foo=1&bar=2&baz=3"
 
 //METHODS
-const goBack = () => {
-            console.log("goback");
-            router.go(-1)
-            history.back();
-        }
+  const goBack = () => {
+              console.log("goback");
+              router.go(-1)
+              history.back();
+          }
+  //COMPUTED
+  const computeDetailId = computed(() => {
+        // this.currentRouteRef.value = this.route.params.voertuigidparam
+        // console.log(this.route.params.voertuigidparam, this.voertuigStore.reactiveVoertuiglist)
+        currentRouteRef.value = route.params.voertuigidparam
+        console.log(currentRouteRef.value, route.params.voertuigidparam)
+        return voertuigStore.reactiveVoertuiglist.find(function (item) {
+            //console.log(item.kenteken)
+           return item.kenteken === currentRouteRef.value;
+          });
+        
+  })
+
+
       return {
         voertuigStore,
         route,
         
+        //refs
+        currentRouteRef,
+
+        //computed/
+        computeDetailId,
+
         urlTrackReactive,
         updateUrlTracking,
         getFilterUrlParams,
@@ -84,18 +105,29 @@ const goBack = () => {
       
     },
     computed:{
-      //computeUrlTrack(){
-       //return this.urltrack = ref('');
-       //return this.composeUrlTrack.length;
-      //}
+      computeUrlTrack(){
+       return this.urltrack = ref('');
+      return this.composeUrlTrack.length;
+      }
+     
+      //computeDetailId(){
+        // this.currentRouteRef.value = this.route.params.voertuigidparam
+        // console.log(this.route.params.voertuigidparam, this.voertuigStore.reactiveVoertuiglist)
+        // console.log(currentRouteRef)
+        // return currentRouteRef
+        // return this.voertuigStore.reactiveVoertuiglist.find(function (item) {
+        //     console.log(item.kenteken)
+        //     item.kenteken === currentRouteRef;
+        //   });
+      //  },
     },
     watch: {
         //value is the default parameter/argument that comes with a watch: propertie. 
-        // composeUrlTrack(value) {
-        //     if (value) {
-        //         console.log("watch composeUrlTrack");
-        //     }
-        // }
+        composeUrlTrack(value) {
+            if (value) {
+                console.log("watch composeUrlTrack");
+            }
+        }
     },
     //lifecyclehooks voor fetchen API data. 
     beforeCreate() {
@@ -106,6 +138,7 @@ const goBack = () => {
     },
     mounted() {
     //return url
+    
     this.setUrl()
     }
 }
@@ -126,18 +159,20 @@ const goBack = () => {
             back</a>
           <!-- <a href="voertuigenpage#/voertuigenpage" @click.prevent="composeUrlTrack.updateUrlTrack()" class="btn btn-outline-secondary">back</a> -->
           <ul>
-            <!-- <li>url track: {{ computeUrlTrack }}</li> -->
-            <li>composeUrlTrack:
-               {{ composeUrlTrack }}</li>
-               <li>computeUrlTrack: {{ this.computeUrlTrack  }}</li>
+            <li>url track: {{ computeUrlTrack }}</li>
+            <li>computeUrlTrack: {{ this.computeUrlTrack  }}</li>
           </ul>       
         </aside>
         <main  class="col-sm-12 col-md-9">     
-          <h2>show items on id ?{{ voertuigStore.getVoertuigList.length }}</h2>
+          <h2>show items on id ?{{ voertuigStore.getVoertuigen.length }}</h2>
           show param: {{route.params.voertuigidparam}}
+          <!-- {{ voertuigStore.getVoertuigen }} -->
             <ul>
-              <li v-for="(value, key) in voertuigStore.getVoertuigList[route.params.voertuigidparam]">
+              <!-- <li v-for="(value, key) in voertuigStore.getVoertuigen[route.params.voertuigidparam]">
                       {{ key }}: {{ value }}
+              </li> -->
+              <li v-for="(value, key) in computeDetailId">
+                {{ key }}: {{ value }}
               </li>
             </ul>
           <!-- <h2>show from history by kenteken as id {{ voertuigStore.getVoertuigByKenteken }}</h2>
@@ -148,13 +183,13 @@ const goBack = () => {
               </li>
             </ul>  -->
             <h2>show from custom items {{ voertuigStore.customBrandVoertuiglist.length }}</h2>
-            <ul>
+            <!-- <ul>
               <p v-if="loading">Loading posts...</p>
               <p v-if="error">{{ error.message }}</p>
               <li v-for="(value, key) in voertuigStore.customBrandVoertuiglist[route.params.voertuigidparam]">
                       {{ key }}: {{ value }}
               </li>
-            </ul>
+            </ul> -->
           </main>
         </div>
 </article>
