@@ -49,7 +49,7 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       return this.getLoader ? state.reactiveVoertuiglist : state.reactiveVoertuiglist  
       },
       getSorting:function(state){
-        return function(arg){
+        return function(arg, arg2){
           console.log('getSorting',arg)
           let array = [];
           let nameA
@@ -58,27 +58,54 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
           array = this.getVoertuigen
           state.sortedlist.length = 0
           state.sortedlist.push(array);
-          
-         return state.sortedlist.flat().sort((a, b) => {
-              if(arg=='handelsbenaming'){
-                nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
-                nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
-              }
-              if (arg=='merk') {
-                 nameA = a.merk.toUpperCase(); // ignore upper and lowercase
-                 nameB = b.merk.toUpperCase(); // ignore upper and lowercase
-              }
-              if (arg=='kenteken') {
-                nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
-                nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
-             }
-              if (nameA < nameB) {
-                return -1;
-              }
-              if (nameA > nameB) {
-                return 1;
-                }  
-              }) 
+        
+        console.log('selectedBrandVoertuiglist',this.selectedBrandVoertuiglist,arg2)
+        if(arg2 != ''){
+          console.log('filter and sort',arg2.length)
+          return state.selectedBrandVoertuiglist
+            //  return state.selectedBrandVoertuiglist.sort((a, b) => {
+            //   if(arg=='handelsbenaming'){
+            //     nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+            //     nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+            //   }
+            //   if (arg=='merk') {
+            //      nameA = a.merk.toUpperCase(); // ignore upper and lowercase
+            //      nameB = b.merk.toUpperCase(); // ignore upper and lowercase
+            //   }
+            //   if (arg=='kenteken') {
+            //     nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
+            //     nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
+            //  }
+            //   if (nameA < nameB) {
+            //     return -1;
+            //   }
+            //   if (nameA > nameB) {
+            //     return 1;
+            //     }  
+            //   }) 
+            }
+            else{
+              return state.sortedlist.flat().sort((a, b) => {
+                if(arg=='handelsbenaming'){
+                  nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+                  nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+                }
+                if (arg=='merk') {
+                   nameA = a.merk.toUpperCase(); // ignore upper and lowercase
+                   nameB = b.merk.toUpperCase(); // ignore upper and lowercase
+                }
+                if (arg=='kenteken') {
+                  nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
+                  nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
+               }
+                if (nameA < nameB) {
+                  return -1;
+                }
+                if (nameA > nameB) {
+                  return 1;
+                  }  
+                })
+            }
         }   
       },
       getHistoryList:function(state){
@@ -127,24 +154,10 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       // },
       //UPDATE: PUSH array state. Passing arguments to getters
       getVoertuigByBrand: function (state) {
-        return function (newStoreUpdateParams) {
+        console.log('store.getVoertuigByBrand',this.selectedBrandVoertuiglist)
+        return function (newStoreUpdateParams, sorttype) {
           //if (newStoreUpdateParams.valueSelected) {
-            console.log("Value is true: " + newStoreUpdateParams.valueSelected + state.reactiveVoertuiglist.length);
-            // state.reactiveVoertuiglist.forEach(function (item, index) {
-            //   // console.log("filter keepitem?: " + keepitem + item.id)
-            //   if (item.merk === newStoreUpdateParams.checkboxName) {
-            //     console.log("push?" + newStoreUpdateParams.checkboxName);
-            //     state.selectedBrandVoertuiglist.push({
-            //       'id': index,
-            //       'kenteken': item.kenteken,
-            //       'voertuigsoort': item.voertuigsoort,
-            //       'merk': item.merk,
-            //       'handelsbenaming': item.handelsbenaming,
-            //     });
-            //     console.log(state.selectedBrandVoertuiglist.length);
-            //     // console.log(state.selectedBrandVoertuiglist)
-            //   }
-            //   });
+            //console.log("Value is true: " + newStoreUpdateParams.valueSelected + state.reactiveVoertuiglist.length, typeof sorttype);
             this.selectedBrandVoertuiglist.length = 0;
             //   return state.selectedBrandVoertuiglist;
             newStoreUpdateParams.totalSelected.forEach(function (item, index) {
@@ -153,7 +166,37 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
               state.selectedBrandVoertuiglist.push(found)
             });
             console.log('??',this.selectedBrandVoertuiglist.flat())
+            if(!sorttype){ 
+            console.log('no sorttype')
+           
             return this.selectedBrandVoertuiglist.flat();
+          }else{
+            console.log('sorting..2',this.selectedBrandVoertuiglist.flat())
+          
+            let nameA
+            let nameB
+             
+             return state.selectedBrandVoertuiglist.flat().sort((a, b) => {
+              if(sorttype=='handelsbenaming'){
+                nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+                nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
+              }
+              if (sorttype=='merk') {
+                 nameA = a.merk.toUpperCase(); // ignore upper and lowercase
+                 nameB = b.merk.toUpperCase(); // ignore upper and lowercase
+              }
+              if (sorttype=='kenteken') {
+                nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
+                nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
+             }
+              if (nameA < nameB) {
+                return -1;
+              }
+              if (nameA > nameB) {
+                return 1;
+                }  
+              }) 
+          }
             //console.log(newStoreUpdateParams.checkboxName )
             // return this.selectedBrandVoertuiglist = state.reactiveVoertuiglist.find(function (item) {
             //     item.merk == newStoreUpdateParams.checkboxName;

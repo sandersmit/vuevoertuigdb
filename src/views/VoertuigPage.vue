@@ -328,6 +328,13 @@ export default {
                     return item.merk.match(searchTextfield);
                 });
                 return searchedVoertuigen
+            }else if(this.filtercheckbox==true){
+                console.log('use search checked Voertuigen');
+                const searchedVoertuigen =this.voertuigStore.selectedBrandVoertuiglist.filter(
+                function (item) {
+                    return item.merk.match(searchTextfield);
+                });
+                return searchedVoertuigen
             }else{
                 console.log('getChangedReactiveVoertuiglist');
                 return this.voertuigStore.getVoertuigen;
@@ -376,32 +383,18 @@ export default {
         // },
        
         sortVoertuigenMerk() {
-            if  (this.filterSortSelect != "" && this.filtercheckbox===false) {    
-                console.log( "sortVoertuigenMerk return sort filter..")         
+            if  (this.filterSortSelect != "" && this.filtercheckbox==false) {    
                 if (this.filterSortSelect == 'merk') {
-                    return this.voertuigStore.getSorting('merk')
+                    return this.voertuigStore.getSorting('merk',this.merkFiltersSelected)
                 } else if (this.filterSortSelect == 'kenteken') {
-                    return this.voertuigStore.getSorting('kenteken')
+                    return this.voertuigStore.getSorting('kenteken',this.merkFiltersSelected)
                 } else if (this.filterSortSelect == 'handelsbenaming') {
-                    return this.voertuigStore.getSorting('handelsbenaming')
-                }
-            
-            }else if(this.filterSortSelect != "" && this.filtercheckbox===true){
-                console.log( "sortVoertuigenMerk return sort && checkbox filter..")
-                if (this.filterSortSelect == 'merk') {
-                    return this.voertuigStore.getCheckboxSorting('merk')
-                } else if (this.filterSortSelect == 'kenteken') {
-                    return this.voertuigStore.getCheckboxSorting('kenteken')
-                } else if (this.filterSortSelect == 'handelsbenaming') {
-                    return this.voertuigStore.getCheckboxSorting('handelsbenaming')
-                }else{
-                    return this.voertuigStore.getVoertuigen
+                    return this.voertuigStore.getSorting('handelsbenaming',this.merkFiltersSelected)
                 }
             }else{
                 console.log( "sortVoertuigenMerk return default..")
              return this.voertuigStore.getVoertuigen;
             }
-            //console.log(sortedVoertuigen);
         },
         computeResults(){
             const newtotalResults = this.searchText!=null?this.searchSortVoertuigen.length:this.voertuigStore.getVoertuigen.length; 
@@ -441,8 +434,19 @@ export default {
                     'totalSelected': returnSelectedBrands
                     //'checkboxmerk': returnSelectedBrands[0]
                 }
-                //only passing the first item in the returnSelectedBrands
-            return this.voertuigStore.getVoertuigByBrand(storeUpdateParams);
+            if(this.filterSortSelect != "" && this.filtercheckbox==true){
+                if (this.filterSortSelect == 'merk') {
+                    return this.voertuigStore.getVoertuigByBrand(storeUpdateParams, 'merk')
+                } else if (this.filterSortSelect == 'kenteken') {
+                    return this.voertuigStore.getVoertuigByBrand(storeUpdateParams, 'kenteken')
+                } else if (this.filterSortSelect == 'handelsbenaming') {
+                    return this.voertuigStore.getVoertuigByBrand(storeUpdateParams, 'handelsbenaming')
+                }
+            }else if (this.filterSortSelect == "" && this.filtercheckbox==true){
+                 //only passing the first item in the returnSelectedBrands
+                return this.voertuigStore.getVoertuigByBrand(storeUpdateParams);
+            }
+               
         }
         
     },
@@ -686,7 +690,7 @@ export default {
             </div>
             <div class="results filterResultstrue searchresultstrue" v-if="this.filterResults==true && this.searchText==null && this.filtercheckbox==true  &&  this.sortResults==true">
                 <mark>Sort+Check results ONLY : {{ filterSortSelect }} - filterResults: {{ filterResults }}  filtercheckbox{{ filtercheckbox  }}</mark>
-                <voertuig-comp v-for="(voertuig, index) in this.sortVoertuigenMerk.slice(this.setPages, this.setEndRange())"
+                <voertuig-comp v-for="(voertuig, index) in this.updateSelectedBrands.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="voertuig.kenteken" :voertuig-merk-prop="voertuig.merk"
                     :voertuig-name-prop="voertuig.merk"
                     :voertuig-soort-prop="voertuig.voertuigsoort" :voertuig-kenteken-prop="voertuig.kenteken"
@@ -704,7 +708,7 @@ export default {
                     @emit-update-user-history="emitUpdateUserHistory">
                 </voertuig-comp>
             </div>
-            <div class="results filterResultstrue searchresultstrue" v-if="this.filterResults==true && this.searchText!=null && this.filtercheckbox==true">
+            <div class="results filterResultstrue searchresultstrue" v-if="this.filterResults==true && this.searchText!=null && this.filtercheckbox==true && this.sortResults==false" >
                 <mark>Search+check results ONLY : {{ filterSortSelect }} - filterResults: {{ filterResults }}</mark>
                 <voertuig-comp v-for="(voertuig, index) in this.searchSortVoertuigen.slice(this.setPages, this.setEndRange())"
                     :key="index" :index-prop="index" :voertuig-id-prop="voertuig.kenteken" :voertuig-merk-prop="voertuig.merk"
