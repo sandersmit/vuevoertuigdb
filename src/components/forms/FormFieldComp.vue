@@ -15,7 +15,6 @@
         :value="inputFieldValueProp"
         @input="inputFieldValuePropEmit"
         >
-        test
        <!-- works with $emit(update:.. & v-model on parent-->
         <!-- @input="inputFieldValuePropEmit" 
         :value="inputFieldValueProp" -->

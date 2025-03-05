@@ -1,7 +1,7 @@
 <script>
 // import { useRoute } from 'vue-router';
 //import { onMounted } from "vue";
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export default{
     //using composition api with setup() as am option from the option API
@@ -34,6 +34,10 @@ export default{
             },
             checkboxValueProp: {
                 type:String,
+                required: true
+            },
+            checkboxResetProp: {
+                type:Boolean,
                 required: true
             }
     },
@@ -89,15 +93,21 @@ export default{
     // -calculated values (from methods:) to the user-interface
     computed:{
         computedClass() {
-      const valueclassname = paginationIndexProp=0 ? 'active':''
-      //let className = 'active';
-      // More complicated logic to determine what
-      // class should be applied
-      return valueclassname;
+            const valueclassname = paginationIndexProp=0 ? 'active':''
+            //let className = 'active';
+            // More complicated logic to determine what
+            // class should be applied
+            return valueclassname;
         },
-        // returnChecked() {
-        //     return this.selected
-        // }   
+      computedReset(){
+        console.log('computed reset all',this.checkboxResetProp)
+    //     this.selected = this.checkboxResetProp 
+          return this.checkboxResetProp ? this.selected = false : this.selected 
+      
+      }
+    // returnChecked() {
+    //     return this.selected
+    // }   
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 

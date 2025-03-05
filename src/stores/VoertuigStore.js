@@ -58,31 +58,11 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
           array = this.getVoertuigen
           state.sortedlist.length = 0
           state.sortedlist.push(array);
-        
+          let currentList = this.selectedBrandVoertuiglist.length>0 ? state.selectedBrandVoertuiglist : state.reactiveVoertuiglist
         console.log('selectedBrandVoertuiglist',this.selectedBrandVoertuiglist,arg2)
         if(arg2 != ''){
           console.log('filter and sort',arg2.length)
-          return state.selectedBrandVoertuiglist
-            //  return state.selectedBrandVoertuiglist.sort((a, b) => {
-            //   if(arg=='handelsbenaming'){
-            //     nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
-            //     nameB = b.handelsbenaming.toUpperCase(); // ignore upper and lowercase
-            //   }
-            //   if (arg=='merk') {
-            //      nameA = a.merk.toUpperCase(); // ignore upper and lowercase
-            //      nameB = b.merk.toUpperCase(); // ignore upper and lowercase
-            //   }
-            //   if (arg=='kenteken') {
-            //     nameA = a.kenteken.toUpperCase(); // ignore upper and lowercase
-            //     nameB = b.kenteken.toUpperCase(); // ignore upper and lowercase
-            //  }
-            //   if (nameA < nameB) {
-            //     return -1;
-            //   }
-            //   if (nameA > nameB) {
-            //     return 1;
-            //     }  
-            //   }) 
+          return currentList
             }
             else{
               return state.sortedlist.flat().sort((a, b) => {
@@ -148,10 +128,10 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
       //  // return state.selectedBrandVoertuiglist;
       // },
       // //reset voertuiglist to 0
-      // resetselectedBrandVoertuiglist:function (state) { 
-      //   state.selectedBrandVoertuiglist.length = 0;
-      //   console.log(state.selectedBrandVoertuiglist.length)
-      // },
+      resetselectedBrandVoertuiglist:function (state) { 
+        state.selectedBrandVoertuiglist.length = 0;
+        console.log(state.selectedBrandVoertuiglist.length)
+      },
       //UPDATE: PUSH array state. Passing arguments to getters
       getVoertuigByBrand: function (state) {
         console.log('store.getVoertuigByBrand',this.selectedBrandVoertuiglist)
@@ -175,7 +155,7 @@ export const useVoertuigStore = defineStore('VoertuigStore', {
           
             let nameA
             let nameB
-             
+
              return state.selectedBrandVoertuiglist.flat().sort((a, b) => {
               if(sorttype=='handelsbenaming'){
                 nameA = a.handelsbenaming.toUpperCase(); // ignore upper and lowercase
